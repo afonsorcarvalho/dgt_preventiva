@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+	<!-- Inherit Form view -->
+		<record id="view_form_dgt_os_equipment_category_inherit" model="ir.ui.view">
+			<field name="name">dgt_os.equipment.category.inherit.form</field>
+			<field name="model">dgt_os.equipment.category</field>
+			<field name="inherit_id" ref="dgt_os.view_form_dgt_os_equipment_category"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='instructions_id']" position="inside">
+						<tree string="Instruções"  editable="bottom" context="{'group_by':'grupo_id'}">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="name" string="Tarefa" />
+									<field name="troca_peca" string="Peça?"/>
+                        			<field name="peca" string="Substiuir peça"/>
+									<field name="peca_qtd" string="Qtd"/>
+									<field name="category_id" invisible="True"/>
+									<field name="tem_medicao"/>
+									<field name="grandeza"/>
+									<field name="tempo_duracao" string="Tempo de duração (min)" widget="float_time"/>
+									<field name="tipo_de_campo"/>
+
+									<field name="grupo_id" string="Grupo de instruções"/>
+									
+                        </tree>
+    				
+    			</xpath>
+			</field>
+		</record>	
+		<!-- Inherit Form view -->
+		<record id="view_form_dgt_inherit" model="ir.ui.view">
+			<field name="name">dgt_os.os.inherit.form</field>
+			<field name="model">dgt_os.os</field>
+			<field name="inherit_id" ref="dgt_os.dgt_os_form_view"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='maintenance_type']" position="after">		
+                     <field name="maintenance_grupo_instrucao"  widget="many2many_tags" attrs="{'readonly':[('state','=', 'done')], 'invisible':[('maintenance_type','!=','preventive')]}"/>	
+    			</xpath>
+			</field>
+		</record>	
+    </data>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+	<report 
+            id="report_preventiva"
+            model="dgt_os.os"
+            string="Preventiva Check List"
+            report_type="qweb-pdf"
+            name="dgt_preventiva.report_preventiva_template"
+            file="dgt_preventiva.report_preventiva"
+            print_report_name = "('Relatório ' + object.name)"
+        />
+   <record id="report_preventiva" model="ir.actions.report">
+            
+            <field name="name">Relatório</field> 
+    </record> 
+   </data>
+</odoo>

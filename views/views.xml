@@ -1,0 +1,189 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <!--
+    <record model="ir.ui.view" id="dgt_preventiva.list">
+      <field name="name">dgt_preventiva list</field>
+      <field name="model">dgt_preventiva.dgt_preventiva</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record> -->
+
+    <record model="ir.ui.view" id="equipment_category_instruction_grupo_list">
+      <field name="name">Grupo de preventiva</field>
+      <field name="model">dgt_os.instruction.grupo</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="categoria"/>
+          
+          <field name="periodicidade"/>
+          <field name="instruction_type"/>
+
+        </tree>
+      </field>
+    </record>
+   
+
+    <!-- actions opening views on models -->
+    <!--
+    <record model="ir.actions.act_window" id="dgt_preventiva.action_window">
+      <field name="name">dgt_preventiva window</field>
+      <field name="res_model">dgt_preventiva.dgt_preventiva</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    -->
+
+     <!-- actions opening views on models -->
+    
+    <record model="ir.actions.act_window" id="equipment_category_instruction_grupo_action_window">
+      <field name="name">Grupo de Preventiva</field>
+      <field name="res_model">dgt_os.instruction.grupo</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    <record model="ir.actions.act_window" id="preventiva_action_window">
+      <field name="name">Preventivas</field>
+      <field name="res_model">dgt_preventiva.dgt_preventiva</field>
+      <field name="view_mode">calendar,tree,form</field>
+    </record>
+    <record model="ir.actions.act_window" id="cronograma_preventiva_action_window">
+      <field name="name">Cronogramas de preventivas</field>
+      <field name="res_model">dgt_preventiva.cronograma</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    <record model="ir.actions.act_window" id="contrato_preventiva_action_window">
+      <field name="name">Contratos de Manutenção</field>
+      <field name="res_model">dgt_preventiva.contratos</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    
+<!--
+
+PREVENTIVA
+
+-->
+    <record id="dgt_preventiva_calendar" model="ir.ui.view">
+			<field name="name">dgt_preventiva.calendar</field>
+			<field name="model">dgt_preventiva.dgt_preventiva</field>
+			<field name="arch" type="xml">
+				<calendar date_start="data_programada" date_stop="data_programada_fim" color="client">
+					<field name="name"/>
+					<field name="client"/>
+					<field name="equipment"/>
+          <field name="grupo_id"  widget="many2many_tags"/>
+          <field name="tecnico"/>
+				</calendar>
+			</field>
+		</record>
+    <record id="dgt_preventiva_lst" model="ir.ui.view">
+			<field name="name">dgt_preventiva.list</field>
+			<field name="model">dgt_preventiva.dgt_preventiva</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="name"/>
+          <field name="data_programada" />
+					<field name="client"/>
+					<field name="equipment"/>
+          <field name="grupo_id" widget="many2many_tags"/>
+          <field name="tecnico"/>
+				</tree>
+			</field>
+		</record>
+<!--
+
+CRONOGRAMA
+
+-->
+    <record id="dgt_preventiva_cronograma_form" model="ir.ui.view">
+			<field name="name">dgt_preventiva.cronograma.form</field>
+			<field name="model">dgt_preventiva.cronograma</field>
+			<field name="arch" type="xml">
+				<form>
+         <header>
+           <button name="action_gera_cronograma" type="object" string="Gerar Preventivas" class="oe_highlight" />
+                                                         
+           <field name="state" widget="statusbar"  />
+         </header>
+          <sheet>
+            <h1><field name="name"/></h1>
+            <field name="description"/>
+            <field name="date_start" string="Início"/>
+            <field name="date_stop" string="Fim"/>
+        
+            <notebook>
+              
+              <page string="Equipamentos" >
+                     <field name="equipments" />
+              </page>
+              <page string="Técnicos" >
+                     <field name="tecnicos" />
+              </page>
+             
+            </notebook>         
+          </sheet>
+				</form>
+			</field>
+		</record>
+    <record id="dgt_preventiva_cronograma_lst" model="ir.ui.view">
+			<field name="name">dgt_preventiva.cronograma.list</field>
+			<field name="model">dgt_preventiva.cronograma</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="name"/>
+					<field name="description"/>
+					<field name="date_start"/>
+          <field name="date_stop"/>
+          <field name="tecnicos" 
+            widget="many2many_tags"
+            />
+				</tree>
+			</field>
+		</record>
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="dgt_preventiva.action_server">
+      <field name="name">dgt_preventiva server</field>
+      <field name="model_id" ref="model_dgt_preventiva_dgt_preventiva"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record> -->
+   
+
+    <!-- Top menu item -->
+    
+   <!--  <menuitem name="dgt_preventiva" id="dgt_preventiva.menu_root"/> -->
+    <menuitem name="Preventivas" id="dgt_preventiva.menu_root" parent="dgt_os.dgt_os_menu_root" sequence="4"/>
+   
+    <!-- menu categories -->
+    
+   <!-- <menuitem name="Grupo de preventiva" id="dgt_preventiva.menu_1" parent="dgt_preventiva.menu_root"/>
+    <menuitem name="Menu 2" id="dgt_preventiva.menu_2" parent="dgt_preventiva.menu_root"/> -->
+   
+    <!-- actions -->
+    
+    <menuitem name="Grupo de preventivas" id="dgt_preventiva.menu_1_list" parent="dgt_preventiva.menu_root"
+              action="equipment_category_instruction_grupo_action_window"/>
+    <menuitem name="Preventivas" id="dgt_preventiva.menu_2_list" parent="dgt_preventiva.menu_root"
+              action="preventiva_action_window"/>
+    <menuitem name="Cronogramas de preventivas" id="dgt_preventiva.menu_3_list" parent="dgt_preventiva.menu_root"
+              action="cronograma_preventiva_action_window"/>
+              
+     <menuitem name="Contratos" id="dgt_preventiva.menu_4_list" parent="dgt_preventiva.menu_root"
+              action="contrato_preventiva_action_window"/>
+  <!--  <menuitem name="Server to list" id="dgt_preventiva" parent="dgt_preventiva.menu_2"
+              action="dgt_preventiva.action_server"/> -->
+   
+  </data>
+</odoo>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit Form view -->
+    
+        <!-- Inherit Form view -->
+        <record id="dgt_os_form_view_inherit" model="ir.ui.view">
+            <field name="name">dgt_os.form.view.inherit</field>
+            <field name="model">dgt_os.os</field>
+            <field name="inherit_id" ref="dgt_os.dgt_os_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='pecas']" position="inside">
+                    		
+                    <form string="Peças" >
+                                <notebook>
+                                <page string="Pecas linhas"> 
+                                        <group>
+                                            <field name="aplicada" string="Status" />
+                                            <field name="product_id"/>
+                                            <field name="name"/>
+                                        </group>
+                                        <group>
+                                            <field name="qty_available" string="Qtd Disp."/> 
+                                            <field name="product_uom_qty" string="Qtd"/> 
+                                            <field name="product_uom" string="Unidade"/> 
+                                        
+                                        </group>
+                                        <group>
+                                            <field name="qty_contrato"/>
+                                            <field name="peca_autorizada"/>
+                                        </group>
+                                        
+                                    </page>
+                            </notebook>
+                        </form>
+                        <tree string="Pecas" decoration-success="aplicada==True" decoration-danger="aplicada==False" editable="bottom" >
+                            <field name="sequence" widget="handle"/>
+                            <field name="aplicada"/>
+                            <field name="product_id"/>
+                            <field name='name'/> 
+                            <field name="lot_id" domain="[('product_id', '=', product_id)]" context="{'default_product_id': product_id}" groups="stock.group_production_lot"/>
+                            <field name="qty_available" string="Qtd Disp."/>
+                            <field name="qty_contrato"/>
+                            <field name="peca_autorizada" readonly="True" />
+                            <field name="product_uom_qty" string="Qtd Ped"/>
+                            <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>
+                            
+                        </tree>
+                    
+                </xpath>
+                
+
+         
+                <xpath expr="//field[@name='check_list']" position="inside">
+
+                    <!-- Add your fields or attributes here -->
+                    <form string="CheckList">
+
+                        <field name="instruction"/>
+                        <field name="check"/>
+                        <field name="medicao" string="Medições"/>
+                        <field name="unidade" string="Unidades"/>
+                        <field name="observations"/>
+                        <field name="troca_peca"/>
+                        <field name="peca"/>
+                        <field name="peca_qtd"/>
+
+                    </form>
+                    <tree string="CheckList" decoration-success="check==True" decoration-danger="check==False" editable="top">
+                        <field name="instruction" string="Instrução" readonly="True"/>
+                        <field name="check" string="Realizado"/>
+                        <field name="tem_medicao" readonly="True"/>
+                        <field name="medicao" string="Medições" attrs="{'readonly': [('tem_medicao', '=', False)]}"/>
+                        <field name="unidade" string="Unidades" readonly="True" attrs="{'invisible': [('tem_medicao', '=', False)]}"/>
+                        <field name="observations" string="Observações" />
+                        <field name="troca_peca" readonly="True" />
+                        <field name="peca"  attrs="{'invisible': [('troca_peca', '=', False)]}"/>
+                        <field name="peca_qtd"  attrs="{'invisible': [('troca_peca', '=', False)]}"/>
+
+                    
+                    </tree>
+                </xpath>
+                <xpath expr="//button[@name='action_draft']" position="after">
+                    
+                    <button name="action_gera_orcamento"
+                            string="Gerar cotação"
+                            type="object"
+                            help="Envia dados para cotação" />
+                 <!--   <button name="action_requisitar_pecas" type="object" string="Requisitar Peças" class="oe_highlight" />
+                    --> 
+                </xpath>
+                <xpath expr="//field[@name='priority']" position="after">
+                    <field name="contrato"  />
+                </xpath>
+            </field>
+        </record>
+                                
+    </data>
+</odoo>                    
+                        

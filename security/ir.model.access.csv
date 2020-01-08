@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dgt_preventiva_dgt_preventiva,dgt_preventiva.dgt_preventiva,model_dgt_preventiva_dgt_preventiva,,1,1,1,1
+access_dgt_os_instruction_grupo,dgt_os.instruction.grupo,model_dgt_os_instruction_grupo,,1,1,1,1
+access_dgt_os_equipment_category_instruction_grandeza, dgt_os.equipment.category.instruction.grandeza,model_dgt_os_equipment_category_instruction_grandeza,,1,1,1,1
+access_dgt_os.equipment.category.instruction.secao,dgt_os.equipment.category.instruction.secao,model_dgt_os_equipment_category_instruction_secao,,1,1,1,1
+access_dgt_preventiva.cronograma, dgt_preventiva.cronograma,model_dgt_preventiva_cronograma,,1,1,1,1
+access_dgt_preventiva.contratos, dgt_preventiva.contratos,model_dgt_preventiva_contratos,,1,1,1,1
+access_dgt_preventiva.contratos.equip.lines, dgt_preventiva.contratos.equip.lines,model_dgt_preventiva_contratos_equip_lines,,1,1,1,1
+access_dgt_preventiva.contratos.pecas.lines, dgt_preventiva.contratos.pecas.lines,model_dgt_preventiva_contratos_pecas_lines,,1,1,1,1

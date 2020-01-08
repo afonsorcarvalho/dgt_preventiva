@@ -1,0 +1,112 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="dgt_preventiva_contratos_form">
+      <field name="name">Contratos de Preventiva</field>
+      <field name="model">dgt_preventiva.contratos</field>
+      <field name="arch" type="xml">
+        <form>
+
+          <header>
+            <button name="gera_cronograma_preventiva" string="Gerar Cronograma" class="oe_highlight" type="object"/>
+            <field name="state" widget="statusbar" statusbar_colors='{"draft":"grey","vigente":"green"}'/>
+          </header>
+          <sheet>
+            
+            <h2>
+              <field name="name" readonly="1" />
+            </h2>
+            <group string="">
+              <group>
+                <field name="client"/>
+                <field name="cronograma"/>
+                <field name="tempo_chamado" string="Tempo de atendimento (horas)"/>
+                <field name="service_product_id" string="Serviço Padrão" />
+              </group>
+              <group>
+                <field name="data_inicio"/>
+                <field name="data_fim"/>
+                <field name="pecas_inclusas" widget="radio"/>
+                <field name="analytic_account_id" string="Conta Analítica"/>
+                <field name="fiscal_position_id"  string= "Posição Fiscal" />
+                
+              </group>
+            </group>
+
+            <notebook>
+
+
+
+              <page string="Equipamentos">
+
+                <field name="equipment"/>
+
+              </page>
+              <page string="Peças" attrs="{'invisible': [('pecas_inclusas','=', 'todas')]}" >
+
+
+
+              <field name="pecas"/>
+
+              </page>
+
+            </notebook>
+
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="dgt_preventiva_contratos_pecas_list">
+      <field name="name">Lista de Peças</field>
+      <field name="model">dgt_preventiva.contratos.pecas.lines</field>
+      <field name="arch" type="xml">
+      
+        <tree editable="bottom">
+           <field name='sequence' widget='handle'/>
+          <field name="product_id"/>
+          <field name="name"/>
+          <field name="product_uom_qty"/>
+          
+         
+          
+
+
+        </tree>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="dgt_preventiva_contratos_equip_list">
+      <field name="name">Lista de Equipamentos</field>
+      <field name="model">dgt_preventiva.contratos.equip.lines</field>
+      <field name="arch" type="xml">
+      
+        <tree editable="bottom">
+          <field name='sequence' widget='handle'/>
+          <field name="equipment_id"/>
+          <field name="name"/>
+         
+         
+          
+
+
+        </tree>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="dgt_preventiva_contratos_list">
+      <field name="name">Contratos de Preventiva</field>
+      <field name="model">dgt_preventiva.contratos</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="client"/>
+          <field name="data_inicio"/>
+          <field name="data_fim"/>
+          <field name="cronograma"/>
+          
+
+
+        </tree>
+      </field>
+    </record>
+
+
+  </data>
+</odoo>

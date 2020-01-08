@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="mail_aviso_preventiva_cliente" model="mail.template">
+        <field name="name">Aviso ao cliente de preventiva</field>
+        <field name="email_from">${object.create_uid.email}</field>
+        <field name="email_to">${object.client.maintenance_email}</field>
+        <field name="subject">Lembrete de preventiva ${object.os_id.name}</field>
+        <field name="model_id" ref="dgt_preventiva.model_dgt_preventiva_dgt_preventiva"/>
+        <field name="body_html">
+            <![CDATA[
+                <p>Prezado(a) ${object.client.name},</p>
+                <p>Há uma preventiva programada para sua instituição:
+                    <b>${object.os_id.name}</b> programada para ${format_date(object.data_programada)} 
+                    com duração estimada em ${object.tempo_estimado} hora(s)
+                <br/>
+                
+                </p>
+                <br/>
+
+                <p>Atenciosamente,
+                <br/>Assistência Técnica</p>
+            ]]>
+        </field>
+    </record>
+
+    <record id="mail_aviso_preventiva_tecnico" model="mail.template">
+        <field name="name">Aviso os técnico de preventiva</field>
+        <field name="email_from">${object.create_uid.email}</field>
+        <field name="email_to">${object.tecnico.work_email}</field>
+        <field name="subject">Lembrete de preventiva ${object.os_id.name}</field>
+        <field name="model_id" ref="dgt_preventiva.model_dgt_preventiva_dgt_preventiva"/>
+        <field name="body_html">
+            <![CDATA[
+                <p>Prezado(a) ${object.tecnico.name},</p>
+                <p>Há uma preventiva programada para você:
+                    <b>${object.os_id.name}</b> programada para ${format_date(object.data_programada)} 
+                    com duração estimada em ${object.tempo_estimado} hora(s)
+                <br/>
+                
+                </p>
+                <br/>
+
+                <p>Atenciosamente,
+                <br/>Gerência Assistência Técnica</p>
+            ]]>
+        </field>
+    </record>
+    
+    <record id="mail_aviso_atraso_preventiva_tecnico" model="mail.template">
+        <field name="name">Aviso ao técnico de atraso de preventiva</field>
+        <field name="email_from">${object.create_uid.email}</field>
+        <field name="email_to">${object.tecnico.work_email}</field>
+        <field name="subject">Aviso de preventiva ${object.os_id.name} atrasada</field>
+        <field name="model_id" ref="dgt_preventiva.model_dgt_preventiva_dgt_preventiva"/>
+        <field name="body_html">
+            <![CDATA[
+                <p>Prezado(a) ${object.tecnico.name},</p>
+                <p>Há uma preventiva programada que <b>não foi realizada</b> e encontra-se <b>atrasada</b>:
+                    <b>${object.os_id.name}</b> programada para ${format_date(object.data_programada)} 
+                    com duração estimada em ${object.tempo_estimado} hora(s)
+                <br/>
+                    É importante que ela seja realizada o mais breve possível. Programe com cliente a sua visita.
+                </p>
+                <br/>
+
+                <p>Atenciosamente,
+                <br/>Gerência Assistência Técnica</p>
+            ]]>
+        </field>
+    </record>
+    <record id="mail_aviso_atraso_preventiva_cliente" model="mail.template">
+        <field name="name">Aviso ao cliente de atraso de preventiva</field>
+        <field name="email_from">${object.create_uid.email}</field>
+        <field name="email_to">${object.client.maintenance_email}</field>
+        <field name="subject">Aviso de preventiva ${object.os_id.name} atrasada</field>
+        <field name="model_id" ref="dgt_preventiva.model_dgt_preventiva_dgt_preventiva"/>
+        <field name="body_html">
+            <![CDATA[
+                <p>Prezado(a) ${object.client.name},</p>
+                <p>Há uma preventiva programada que <b>não foi realizada</b> e encontra-se <b>atrasada</b>:
+                    <b>${object.os_id.name}</b> programada para ${format_date(object.data_programada)} 
+                    com duração estimada em ${object.tempo_estimado} hora(s)
+                <br/>
+                
+                </p>
+                <br/>
+
+                <p>Atenciosamente,
+                <br/>Gerência Assistência Técnica</p>
+            ]]>
+        </field>
+    </record>
+</odoo>
