@@ -232,9 +232,8 @@ class dgt_preventiva(models.Model):
     
     @api.one
     def set_preventiva_atrasada(self):
-      
         if not self.preventiva_executada:
-            p.state = 'atrasada'
+            self.state = 'atrasada'
     
     @api.multi
     def envia_email_aviso_preventiva(self,tipo='aviso') :
