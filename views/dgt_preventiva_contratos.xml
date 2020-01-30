@@ -27,7 +27,7 @@
                 <field name="data_fim"/>
                 <field name="pecas_inclusas" widget="radio"/>
                 <field name="analytic_account_id" string="Conta Analítica"/>
-                <field name="fiscal_position_id"  string= "Posição Fiscal" />
+                <field name="fiscal_position_id"  string= "Posição Fiscal de Peças" />
                 
               </group>
             </group>

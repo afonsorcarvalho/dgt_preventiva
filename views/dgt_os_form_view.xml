@@ -48,14 +48,9 @@
                         </tree>
                     
                 </xpath>
-                
-
-         
                 <xpath expr="//field[@name='check_list']" position="inside">
-
                     <!-- Add your fields or attributes here -->
                     <form string="CheckList">
-
                         <field name="instruction"/>
                         <field name="check"/>
                         <field name="medicao" string="Medições"/>
@@ -64,33 +59,24 @@
                         <field name="troca_peca"/>
                         <field name="peca"/>
                         <field name="peca_qtd"/>
-
                     </form>
                     <tree string="CheckList" decoration-success="check==True" decoration-danger="check==False" editable="top">
-                        <field name="instruction" string="Instrução" readonly="True"/>
+                        <field name="instruction" string="Instrução" />
                         <field name="check" string="Realizado"/>
-                        <field name="tem_medicao" readonly="True"/>
+                        <field name="tem_medicao" />
                         <field name="medicao" string="Medições" attrs="{'readonly': [('tem_medicao', '=', False)]}"/>
                         <field name="unidade" string="Unidades" readonly="True" attrs="{'invisible': [('tem_medicao', '=', False)]}"/>
                         <field name="observations" string="Observações" />
-                        <field name="troca_peca" readonly="True" />
+                        <field name="troca_peca"  />
                         <field name="peca"  attrs="{'invisible': [('troca_peca', '=', False)]}"/>
                         <field name="peca_qtd"  attrs="{'invisible': [('troca_peca', '=', False)]}"/>
-
                     
                     </tree>
                 </xpath>
-                <xpath expr="//button[@name='action_draft']" position="after">
-                    
-                    <button name="action_gera_orcamento"
-                            string="Gerar cotação"
-                            type="object"
-                            help="Envia dados para cotação" />
-                 <!--   <button name="action_requisitar_pecas" type="object" string="Requisitar Peças" class="oe_highlight" />
-                    --> 
-                </xpath>
+              
                 <xpath expr="//field[@name='priority']" position="after">
-                    <field name="contrato"  />
+                   
+                    <field name="contrato"  attrs="{'readonly':[('state','!=', 'draft')]}" />
                 </xpath>
             </field>
         </record>

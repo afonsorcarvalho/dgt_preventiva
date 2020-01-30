@@ -138,13 +138,15 @@ PREVENTIVA
   <field name="name">dgt_preventiva.calendar</field>
   <field name="model">dgt_preventiva.dgt_preventiva</field>
   <field name="arch" type="xml">
-    <calendar date_start="data_programada" date_stop="data_programada_fim" color="client">
+    <calendar date_start="data_programada" date_stop="data_programada_fim" color="cronograma">
       <field name="name"/>
       <field name="client"/>
-      <field name="equipment"/>
+      <field name="equipment" widget="many2one_tags"/>
+      <field name="cronograma"/>
       <field name="grupo_id" widget="many2many_tags"/>
-      <field name="tecnico"/>
-      <field name="gerada_os" string="OS gerada?" />
+      
+      <field name="tecnico" widget="many2one_tags" />
+      
       <field name="state" />
     </calendar>
   </field>
@@ -156,19 +158,21 @@ PREVENTIVA
   <field name="arch" type="xml">
   
   
-    <tree string="Preventivas" delete="false" create="false" edit="1" editable="top"
+    <tree string="Preventivas" delete="true" create="false" edit="1" editable="top"
           decoration-bf="state=='programada'"
           
           decoration-danger="state == 'atrasada'"
           decoration-success="state == 'done'"
           decoration-muted="state == 'cancel'">
 
-      <button string="Gera OS" class="oe_highlight" icon="fa-briefcase" type="object" name="action_gera_os"/>
+      <!--<button string="Gera OS" class="oe_highlight" icon="fa-briefcase" type="object" name="action_gera_os"/> -->
       <field name="name"/>
       <field name="data_programada" string="Início"/>
       <field name="data_programada_fim" string="Fim"/>
       <field name="tempo_estimado"  widget="float_time" />
       <field name="client"/>
+      <field name="cronograma"/>
+
       <field name="equipment" readonly="1"/>
       <field name="grupo_id" widget="many2many_tags"/>
       <field name="dias_de_atraso" readonly="1"/>
@@ -188,19 +192,12 @@ PREVENTIVA
           <field name="name" /> 
           <field name="client"/> 
           <field name="equipment" 
-            filter_domain="[
-            '|','|','|','|'
-            ('display_name', 'ilike', self), 
-            ('serial_number', 'ilike', self), 
-            ('model', 'ilike', self),
-            ('tag', 'ilike', self),
-            ('patrimony', 'ilike', self)
-            ]"
+           
           />
           <field name="tecnico"/>
           <field name="state" />
           <field name="os_id" string="OS nº" />
-          <field name="dias_de_atraso" readonly="1"/>
+          <field name="dias_de_atraso" />
           <field name="data_programada" string="Início"/>
           
         </search> 

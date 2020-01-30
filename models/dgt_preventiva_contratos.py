@@ -132,8 +132,18 @@ class PreventivaContratos(models.Model):
             result = super(PreventivaContratos, self).create(vals)
         return result
     
-    
    
+    def get_ativo(self):
+        _logger.debug("Entrando get_ativo()")
+        _logger.debug("Data do final do contrato: %s", self.data_fim)
+        _logger.debug("Data de hoje: %s", fields.date.today())
+        if self.data_fim >= fields.date.today():
+            _logger.debug("Contrato %s esta ativo",self.name)
+            return True
+        else:
+            _logger.debug("Contrato %s está vencido",self.name)
+            return False
+
 
 
 class PreventivaContratosEquipmentLine(models.Model):

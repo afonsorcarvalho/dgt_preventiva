@@ -1,7 +1,23 @@
 from odoo import models, fields, api
 from odoo.addons import decimal_precision as dp
 
+class Equipment(models.Model):
+    
+    _inherit = ['dgt_os.equipment']
+    
+   
+    def get_contrato(self,state="ativo"):
+        contrato=0
+        equipline = self.env['dgt_preventiva.contratos.equip.lines'].search([('equipment_id','=',self.id)],offset=0, limit=1)
+        #Equipamento tem  contrato?
+        if equipline.id:
+            #verifica se contrato está ativo
+            if equipline.contrato.get_ativo():
+                contrato = equipline.contrato
+        return contrato  
+            
 
+    
 class CategoryInstructionPreventiva(models.Model):
     #_name = 'dgt_os.equipment.category.instruction.inherit'
     _inherit = 'dgt_os.equipment.category.instruction'

@@ -15,13 +15,7 @@ class DgtOsInherit(models.Model):
     _inherit = 'dgt_os.os'
 
     	
-    STATE_SELECTION = [
-		('draft', 'Criada'),
-		('cancel', 'Cancelada'),
-		('under_repair', 'Em execução'),
-		('done', 'Concluída'),
-	]
-
+   
     maintenance_grupo_instrucao = fields.Many2many(
 		'dgt_os.instruction.grupo',string='Grupo de Instruções'
 		)
@@ -31,7 +25,7 @@ class DgtOsInherit(models.Model):
     )
     contrato = fields.Many2one(
 		'dgt_preventiva.contratos',string='Contrato'
-		)
+	)
 
     pendencias_true = fields.Boolean(
         string=u'Pendências',
@@ -47,10 +41,10 @@ class DgtOsInherit(models.Model):
     precisa_autorizacao = fields.Boolean(
         string=u'Precisa autorização',
     )
-   
-        
-        
-      
+    
+    # check_list = fields.One2many(
+	# 	'dgt_os.os.verify.list', 'os_id', u'Check List',
+	# 	copy=False, readonly=False,track_visibility='onchange')
 
     # assinatura digital
     name_digital_signature_client = fields.Char(
@@ -70,7 +64,7 @@ class DgtOsInherit(models.Model):
                 _(msg))
         self.date_execution = self.date_scheduled
         
-    #TODO Pegar de alguma configuração o serviço do contrato   
+    #TODO Colocar o add_service também na dgt_os.os para fazer somente um override aqui
     def add_service(self):
         _logger.debug("adicionando serviço atraves do contrato:")
         _logger.debug(self.contrato)
@@ -112,9 +106,9 @@ class DgtOsInherit(models.Model):
             if self.contrato.service_product_id.id:
                 #verificando se tem esse serviço adicionado
                 if self.contrato.service_product_id in servicos_line:
-                    _logger.debug("Já existe serviço adicionado: %s", self.contrato.service_product_id.id)
+                    _logger.debug("Já existe serviço adicionado: %s", self.contrato.service_product_id.name)
                 else:
-                    _logger.debug("Serviço adicionado: %s", self.contrato.service_product_id.id)
+                    _logger.debug("Serviço adicionado: %s", self.contrato.service_product_id.name)
                     product_id = self.contrato.service_product_id
                
         _logger.debug("Verificando tempo para adicionar no serviço")
@@ -134,42 +128,51 @@ class DgtOsInherit(models.Model):
        #     'product_uom': product_id.uom_id.id,
        #     'product_uom_qty' : product_uom_qty
        # }) 
+       #TODO verificar se está pegando mesmo a descrição
+        if self.description:
+            name = self.description
+        else:
+            name = product_id.display_name
         self.servicos = [(0,0,{
             'os_id' : self.id,
-            'name': self.description,
+            'automatic': True,
+            'name': name,
             'product_id' : product_id.id,
             'product_uom': product_id.uom_id.id,
             'product_uom_qty' : product_uom_qty
         })]
         _logger.debug( self.servicos)
-        
+        return self.servicos
+    
+    def default_analytic_account(self):
+        #se tiver contrato
+        self.analytic_account_id = 0
+        _logger.debug("configurando conta analitica") 
+        if self.contrato.id:
+            _logger.debug("Equipamento em contrato") 
+            if self.contrato.analytic_account_id.id:
+                _logger.debug("Conta analitica do contrato: %s",self.contrato.analytic_account_id.name) 
+                self.analytic_account_id = self.contrato.analytic_account_id.id
+            else:
+                _logger.debug("Não configurado conta analitica no contrato")
+        else:
+             _logger.debug("Equipamento fora de contrato, nenhuma conta analítica configurada")
+                 
     @api.onchange('equipment_id')
     def _change_equipment(self):
-        
-        _logger.debug("procurando contrato:")
-        _logger.debug(self.equipment_id.id)
-        
         if self.equipment_id.id:
+            _logger.debug("procurando contrato:")
+            _logger.debug(self.equipment_id.id)
+        
+        
             _logger.debug("Equipamento selecionado: %s",self.equipment_id)
-            equipline = self.env['dgt_preventiva.contratos.equip.lines'].search([('equipment_id','=',self.equipment_id.id)],offset=0, limit=1)
-            #Equipamento tem  contrato?
-            if len(equipline) > 0:
-                #contrato está vigente?
-                if equipline.contrato.data_fim >= fields.date.today():
-                    self.contrato = equipline.contrato
-                    _logger.debug("contrato vigente achado:")
-                    _logger.debug(self.contrato)
-                    
-                    
-                else:
-                    self.contrato = False
-            else:
-                self.contrato = False
-        self.add_service()
-                
-    
-    
-    
+            self.contrato = self.equipment_id.get_contrato()
+            _logger.debug("Contrato: %s",self.contrato.name)
+            _logger.debug(self.contrato)
+                                 
+            self.add_service()
+            self.default_analytic_account()
+            
     def create_checklist(self):
         """Cria a lista de verificacao caso a OS seja preventiva"""
         if self.maintenance_type == 'preventive':
@@ -205,6 +208,21 @@ class DgtOsInherit(models.Model):
                     })
                  
 
+    def update_preventiva(self):
+    #TODO 
+    # procura menor data e menor hora e coloca em data inicio da preventiva
+    # depois procura maior data e maior hora e coloca em data de fim da preventiva
+            
+        preventiva = self.env['dgt_preventiva.dgt_preventiva'].search([('os_id', '=', self.id)])
+       
+        if preventiva.id:
+            res = preventiva.write({
+                'data_execucao': self.date_start,
+                'data_execucao_fim': self.date_execution ,
+                'preventiva_executada': True,
+                'state':'done'
+            })
+
     # ----------------------------------------
     # Actions Methods
     # ----------------------------------------
@@ -213,29 +231,22 @@ class DgtOsInherit(models.Model):
     @api.multi
     def action_repair_end(self):
         #TODO
+        # atualizar status do equipamento
+        # atualizar status da solicitacao de serviço
         #procura preventiva relacionada e coloca ela como executada e hora de início e fim da execução
         
         
         result = super(DgtOsInherit, self).action_repair_end()
         if result:
-            relatorios = self.relatorios
-            #TODO 
-            # procura menor data e menor hora e coloca em data inicio da preventiva
-            # depois procura maior data e maior hora e coloca em data de fim da preventiva
-            
-            preventiva = self.env['dgt_preventiva.dgt_preventiva'].search([('os_id', '=', self.id)])
-            
-            if preventiva.id:
-                res = preventiva.write({
-                    'data_execucao': self.date_start,
-                    'data_execucao_fim': self.date_execution ,
-                    'preventiva_executada': True,
-                    'state':'done'
-                })
-                
-                    
+            self.update_preventiva()
+            #TODO
+            #self.update_status_equipment()   
+            #self.update_status_solicicao()   
+                                
         return result
-     
+    
+    
+    #retirada por enquanto não está sendo utilizada 
     def action_requisitar_pecas(self):
         _logger.info("requisitando peças:")
         
@@ -243,6 +254,7 @@ class DgtOsInherit(models.Model):
     def get_fiscal_position_default(self):
         name = self.contrato.fiscal_position_id.name
         return self.env['account.fiscal.position'].name_search(name=name, args=None, operator='ilike', limit=1)
+    
      #TODO Fazer em configurações uma conta analitica padrão para que possa ser carregada nesta função
     def get_analytic_account_default(self):
         name = self.contrato.analytic_account_id.name
@@ -251,110 +263,13 @@ class DgtOsInherit(models.Model):
         return self.env['account.analytic.account'].name_search(name=name, args=None, operator='ilike', limit=1)   
     
     
-    #TODO Colocar também o técnico que irá receber a comissão 
-    # colocar tempo de execução no serviço do contrato, mas isso tem que ser feito ao realizar fim da execução ou qd 
-    # aciona o botão de gerar o orçamento   
-    def action_gera_orcamento(self):
-        if self.filtered(lambda dgt_os: dgt_os.gerado_cotacao == True):
-            raise UserError(_("Cotação para esse Ordem de serviço já foi gerada"))
-        if not len(self.servicos):
-            raise UserError(_("Para gerar cotação deve ter pelo menos um serviço adicionado"))
-        
-        _logger.info("dados do contrato:")
-        _logger.info("posicão fiscal:")
-        _logger.info(self.contrato.fiscal_position_id)
-        _logger.info("Conta Analítica:")
-        _logger.info(self.contrato.analytic_account_id)
-        _logger.info("gerando cotação:")
-        _logger.info(self)
-        
-        saleorder = self.env['sale.order'].create({
-            "origin": self.name,
-            "partner_id" : self.cliente_id.id,
-            "analytic_account_id":self.contrato.analytic_account_id,
-            "fiscal_position_id":self.contrato.fiscal_position_id
-            
-        })
-        _logger.info("sale_order:")
-        _logger.info(saleorder)
-
-        if saleorder.id:
-            _logger.info("criar linhas da sale.order:")
-            _logger.info(saleorder.name)
-            
-            name_note = "Referente ao equipamento "
-            if self.equipment_id.name: name_note = name_note + self.equipment_id.name
-            if self.equipment_serial_number: name_note = name_note + " NS " + str(self.equipment_serial_number)
-            if self.equipment_model: name_note = name_note + " Modelo: " + str(self.equipment_model)
-               
-            # Adicionando as peças
-            self.env['sale.order.line'].create({
-                    'name' : name_note,
-                    'display_type' : 'line_note',
-                    'order_id': saleorder.id,
-                    'product_id': False,
-                    'product_uom': False,
-                    
-                })
-            self.env['sale.order.line'].create({
-                    'name' : "Peças da " + self.name +":",
-                    'display_type' : 'line_section',
-                    'order_id': saleorder.id,
-                    'product_id': False,
-                    'product_uom': False,
-                    
-                })
-            _logger.info("Sessão criada:")
-            for peca in self.pecas:
-                _logger.info("adicionando linhas de pecas:")
-                saleline = self.env['sale.order.line'].create({
-                    
-                    'order_id': saleorder.id,
-                    'product_id': peca.product_id.id,
-                    'product_uom_qty': peca.product_uom_qty,
-                    'product_uom': peca.product_uom.id,
-                    'invoice_lines': peca.invoice_line_id.id,
-                })
-                _logger.info("linha peca adicionada:")
-                _logger.info(saleline)
-            
-            #adicionando serviços
-
-            self.env['sale.order.line'].create({
-                    'name' : "Serviços da " + self.name + ":",
-                    'display_type' : 'line_section',
-                    'order_id': saleorder.id,
-                    'product_id': False,
-                    'product_uom': False,
-                    
-                })
-            _logger.info("Sessão criada:")
-            #TODO Pegar do contrato o serviço product_id caso tenha configurado no contrato
-            for servico in self.servicos:
-                _logger.info("adicionando linhas:")
-                saleline = self.env['sale.order.line'].create({
-                    
-                    'order_id': saleorder.id,
-                    'product_id': servico.product_id.id,
-                    'product_uom_qty': servico.product_uom_qty,
-                    'product_uom': servico.product_uom.id,
-                    'invoice_lines': servico.invoice_line_id.id,
-                })
-                _logger.info("linha serviço adicionada:")
-                _logger.info(saleline)
-            
-            self.write({'sale_id': saleorder.id,'gerado_cotacao': True})   
-        
-        return True
+    
 
 
 class OsVerifyLisInherit(models.Model):
     _inherit = 'dgt_os.os.verify.list'
 
-    dgt_os = fields.Many2one('dgt_os.os', "OS")
-    instruction = fields.Char('Instruções')
-    check = fields.Boolean()
-    tem_medicao = fields.Boolean(string='Tem medição?')
+    tem_medicao = fields.Boolean("tem medição?")
     medicao = fields.Float("Medições")
     unidade = fields.Char('Unidades')
     tipo_de_campo = fields.Char("Tipo de campo")
@@ -362,12 +277,3 @@ class OsVerifyLisInherit(models.Model):
     troca_peca = fields.Boolean(string="Substituição de Peça?",required=False)    
     peca = fields.Many2one('product.product', u'Peça', required=False)
     peca_qtd = fields.Float('Qtd', default=0.0,	digits=dp.get_precision('Product Unit of Measure'))
-
-    
-  
-    
-  
-    
-  
-    
-    
