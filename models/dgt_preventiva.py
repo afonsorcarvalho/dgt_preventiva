@@ -303,7 +303,9 @@ class dgt_preventiva(models.Model):
         dias =  datetime.now() - p.data_programada
         res = dias.total_seconds()
         res = res/umdia
-        return res 
+        _logger.debug("Dias de atraso float %s", res)
+        _logger.debug("Dias de atraso int %s", res)
+        return int(res) 
     
     # *************************
     #  CRON  gera OS e verifica atrasos de preventiva
@@ -311,15 +313,15 @@ class dgt_preventiva(models.Model):
     # *************************
     @api.multi
     def cron_agenda_preventiva(self):
-        dias_antecipa_gera_os = 30
+        dias_antecipa_gera_os = 10
         dias_avisa_prev = 2
         _logger.info("Entrou no agendamento da preventiva...")
         hoje = fields.Date.today()
         
         res = self.env['dgt_preventiva.dgt_preventiva'].search(
             [('gerada_os', '=', False), ('data_programada', '>=', hoje),('data_programada', '<=', hoje + timedelta(days=dias_antecipa_gera_os))])
-        _logger.info(res)
-        
+        _logger.debug(res)
+
         for r in res:
             os = r.gera_os()
         _logger.info("chamando aviso de preventiva...")
