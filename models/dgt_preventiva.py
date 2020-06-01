@@ -304,7 +304,7 @@ class dgt_preventiva(models.Model):
         res = dias.total_seconds()
         res = res/umdia
         _logger.debug("Dias de atraso float %s", res)
-        _logger.debug("Dias de atraso int %s", res)
+        _logger.debug("Dias de atraso int %s", int(res))
         return int(res) 
     
     # *************************
@@ -335,9 +335,9 @@ class dgt_preventiva(models.Model):
         res = self.env['dgt_preventiva.dgt_preventiva'].search([('preventiva_executada', '=', False)])
         for r in res:
             dias_de_atraso = r.calc_dias_de_atraso()
-            #_logger.info(dias_de_atraso)
-            r.dias_de_atraso = dias_de_atraso[0]
-            if dias_de_atraso[0] > 0:
+            _logger.debug(dias_de_atraso)
+            r.dias_de_atraso = dias_de_atraso
+            if dias_de_atraso > 0:
                 r.set_preventiva_atrasada()
         
         _logger.info("chamando aviso de atraso de preventiva...")        
