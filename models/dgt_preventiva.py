@@ -172,7 +172,8 @@ class dgt_preventiva(models.Model):
                 #todo não está funcionando colocar o tempo estimado na OS
             if ('tempo_estimado' in vals):
                 self.os_id.maintenance_duration = vals['tempo_estimado']
-            self.dias_de_atraso = self.calc_dias_de_atraso()
+            #self.calc_dias_de_atraso()
+            
             
         if self.preventiva_executada == True:
             raise UserError(
@@ -202,25 +203,42 @@ class dgt_preventiva(models.Model):
         
         return True
     
-    
+    #TODO
+    # Colocar serviço de manutenção preventiva default do contrato na service.line da Ordem de serviço
     @api.multi
     def gera_os(self):
         r = self
-        _logger.info("Grupo...")
+        _logger.info("Grupo de instruções...")
         _logger.info(r.grupo_id)
-        
+        analytic_account_id = 0
+        fiscal_position_id = 0
+        contrato = 0
         #pegando grupo de instruções
         grps_inst = [] 
-        for g in r.grupo_id:
-            _logger.info(g.id)
-            grps_inst.append(g.id)
         
+        for g in r.grupo_id:
+            _logger.debug("Grupo de instruções adicionado %s", g.name)
+        
+        _logger.debug("Procurando contratos do equipamento")
+        contrato = self.equipment_id.get_contrato()
+        
+        if contrato.id:
+            _logger.debug("Achado contrato vigente %s", contrato.name)
+            _logger.debug("Adicionando analytic_account %s", contrato.analytic_account_id.name)
+            _logger.debug("Adicionando fiscal_position_id %s", contrato.fiscal_position_id.name)
+            analytic_account_id = contrato.analytic_account_id
+            fiscal_position_id = contrato.fiscal_position_id
+            
+            
         os = self.env['dgt_os.os'].create({
                 'origin':r.name, 
                 'maintenance_type':'preventive',
                 'cliente_id': r.client.id,
                 'contact_os': 'Automático',
                 'description': r.name,
+                'contrato': contrato,
+                'analytic_account_id': analytic_account_id.id,
+                'fiscal_position_id': fiscal_position_id.id,
                 'equipment_id': r.equipment.id,
                 'date_scheduled':  r.data_programada,
                 'date_execution':  r.data_programada,
@@ -293,19 +311,37 @@ class dgt_preventiva(models.Model):
         _logger.info(res)
         res.envia_email_aviso_preventiva('atraso')
         
-    @api.one
+    @api.multi
     def calc_dias_de_atraso(self):
         p=self
-        umdia = (3600*24)  
-        # res = []
-        #for p in self:
+        for p in self:
+            umdia = (3600*24)  
+            # res = []
+            #for p in self:
+            if p.preventiva_executada:
+                _logger.debug("Preventiva %s Executada", p.name)
+                dias =  datetime.now() - p.data_execucao
+            else:
+                _logger.debug("Preventiva %s não Executada", p.name)
+                dias =  datetime.now() - p.data_programada
+            res = dias.total_seconds()
+            res = res/umdia
+            _logger.debug("%s dias de atraso float da preventica %s", res, p.name)
+            p.dias_de_atraso = int(res)
+            if p.dias_de_atraso > 0:
+                p.state = 'atrasada'
         
+            
+        
+<<<<<<< HEAD
         dias =  datetime.now() - p.data_programada
         res = dias.total_seconds()
         res = res/umdia
         _logger.debug("Dias de atraso float %s", res)
         _logger.debug("Dias de atraso int %s", int(res))
         return int(res) 
+=======
+>>>>>>> 3baba0238c7a48bfaff5be189a7957513ebb5bf1
     
     # *************************
     #  CRON  gera OS e verifica atrasos de preventiva
@@ -333,12 +369,18 @@ class dgt_preventiva(models.Model):
         #valores negativos dias que faltam para preventiva
         #valores positivos dias de atraso
         res = self.env['dgt_preventiva.dgt_preventiva'].search([('preventiva_executada', '=', False)])
+<<<<<<< HEAD
         for r in res:
             dias_de_atraso = r.calc_dias_de_atraso()
             _logger.debug(dias_de_atraso)
             r.dias_de_atraso = dias_de_atraso
             if dias_de_atraso > 0:
                 r.set_preventiva_atrasada()
+=======
+        res.calc_dias_de_atraso()
+        
+            
+>>>>>>> 3baba0238c7a48bfaff5be189a7957513ebb5bf1
         
         _logger.info("chamando aviso de atraso de preventiva...")        
         #aviso de manutenção preventiva atrasada

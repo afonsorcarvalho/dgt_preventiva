@@ -26,9 +26,13 @@ class dgtOsPecasLineInherit(models.Model):
              "Caso o equipamento não pertença a nenhum contrato o valor é zero.\n",readonly=True, copy=True)
     peca_autorizada = fields.Boolean(string=u'Peça autorizada')
     
+    
+    #TODO
+    # refazer esta função está dando erro na contabilização das quantidades
     @api.one
     @api.depends('product_uom_qty', 'product_id')
     def _compute_qty_contrato(self):
+        return 0
         #procura contrato de preventiva ativo
         contrato = self.env['dgt_preventiva.contratos'].search([
             ('client', '=', self.os_id.cliente_id.id),
