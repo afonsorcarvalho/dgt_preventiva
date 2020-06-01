@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_cliente_equipment_template">
+       <table class="table table-sm table-condensed table-striped">
+                    <thead>
+                        <th width="50%" class="text-center">Dados do Cliente</th>
+                        <th class="text-center">Dados do Equipamento</th>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="p-1">
+                                <b><span t-field="o.cliente_id.name"/></b> <br/> CNPJ/CPF:<span t-field="o.cliente_id.cnpj_cpf"/><br/>
+                                <span t-field="o.cliente_id.street"/>, <span t-field="o.cliente_id.number"/>, 
+                                <span t-field="o.cliente_id.district"/>
+                                <span t-field="o.cliente_id.street2"/>-<br/> 
+                                <span t-field="o.cliente_id.city_id.name"/>
+                                <span t-field="o.cliente_id.state_id.name"/>-
+                                <span t-field="o.cliente_id.country_id.name"/>-
+                                <span t-field="o.cliente_id.zip"/><br/>
+                                <strong>Contato:</strong><br/>
+                                <span t-field="o.cliente_id.phone"/><br/> 
+                                <span t-field="o.cliente_id.mobile"/><br/>
+                                <span t-field="o.cliente_id.email"/>
+                            </td>
+                            <td>
+                                <b><span t-field="o.equipment_id.name"/></b><br/>
+                                <b>Número de Série:</b><span t-field="o.equipment_id.serial_number"/>
+                                <t t-if="o.equipment_id.model">
+                                    <b>Modelo:</b> <span t-if="o.equipment_id.model" t-field="o.equipment_id.model"/>	
+                                </t>
+                                <t t-if="o.equipment_id.partner_id.name">
+                                    <b>Marca/Fornecedor:</b> <span t-if="o.equipment_id.partner_id.name" t-field="o.equipment_id.partner_id.name"/>	
+                                </t>
+                                <br/>
+                                <t t-if="o.equipment_location">
+                                    <b>Setor: </b><span t-if="o.equipment_location" t-field="o.equipment_location"/><br/>	
+                                </t>
+                                <strong>Status:</strong><br/>
+                                <span t-field="o.equipment_id.situation_id"/>	
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+    </template>
+</odoo>

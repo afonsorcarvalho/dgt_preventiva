@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_assinatura_template">
+        <table class="table table-sm table-condensed table-striped  table-bordered">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Assinaturas <span t-field="o.name"/></th>
+                        </tr>
+                        <tr>
+                        <th class="text-center">Assinatura e carimbo Técnico</th>
+                        <th class="text-center">Assinatura e carimbo Cliente</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Data:_______/_________/__________</td>
+                            <td>Data:_______/_________/__________</td>
+                        </tr>
+                        <tr>
+                            <td width="50%">
+                                
+								
+									<div t-foreach="o.tecnicos_id" t-as="line" class="text-center">
+
+										<img width="50%" class="img-fluid" t-att-src="'data:image/png;base64,%s' % to_text(line.user_id.digital_signature)"/>	
+	
+									</div>
+								
+                            </td>
+                            <td>
+                    
+										<img width="50%" class="img-fluid" t-att-src="'data:image/png;base64,%s' % to_text(o.digital_signature_client)"/>	
+
+                            </td>
+                        </tr>
+						<tr>
+						<td><div t-foreach="o.tecnicos_id" t-as="line" class="text-center"><span t-field="line.name"/></div></td>
+						<td><span t-field="o.name_digital_signature_client"/></td>
+						</tr>
+                    </tbody>
+                </table>
+    </template>
+</odoo>
