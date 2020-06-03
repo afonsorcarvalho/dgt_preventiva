@@ -12,6 +12,7 @@ from odoo.exceptions import UserError
 import pytz
 import logging
 import calendar
+import pdb
 
 _logger = logging.getLogger(__name__)
 
@@ -184,7 +185,9 @@ class dgt_preventiva(models.Model):
     
     @api.multi
     def action_gera_os(self):
-       
+        pdb.set_trace()
+        _logger.info("gerando os")
+        _logger.debug(self)
         for record in self:
             os = record.gera_os()
             if os.id:
@@ -220,14 +223,16 @@ class dgt_preventiva(models.Model):
             _logger.debug("Grupo de instruções adicionado %s", g.name)
         
         _logger.debug("Procurando contratos do equipamento")
-        contrato = self.equipment_id.get_contrato()
-        
-        if contrato.id:
-            _logger.debug("Achado contrato vigente %s", contrato.name)
-            _logger.debug("Adicionando analytic_account %s", contrato.analytic_account_id.name)
-            _logger.debug("Adicionando fiscal_position_id %s", contrato.fiscal_position_id.name)
-            analytic_account_id = contrato.analytic_account_id
-            fiscal_position_id = contrato.fiscal_position_id
+        contrato = self.equipment.get_contrato()
+        try:
+            if contrato:
+                _logger.debug("Achado contrato vigente %s", contrato.name)
+                _logger.debug("Adicionando analytic_account %s", contrato.analytic_account_id.name)
+                _logger.debug("Adicionando fiscal_position_id %s", contrato.fiscal_position_id.name)
+                analytic_account_id = contrato.analytic_account_id.id
+                fiscal_position_id = contrato.fiscal_position_id.id
+        except ValueError:
+            _logger.debug("Equipamento não pertence a nenhum contrato")
             
             
         os = self.env['dgt_os.os'].create({
@@ -237,12 +242,13 @@ class dgt_preventiva(models.Model):
                 'contact_os': 'Automático',
                 'description': r.name,
                 'contrato': contrato,
-                'analytic_account_id': analytic_account_id.id,
-                'fiscal_position_id': fiscal_position_id.id,
+                'analytic_account_id': analytic_account_id,
+                'fiscal_position_id': fiscal_position_id,
                 'equipment_id': r.equipment.id,
                 'date_scheduled':  r.data_programada,
                 'date_execution':  r.data_programada,
                 'maintenance_grupo_instrucao': [(6, 0, grps_inst)],
+                'tecnicos_id': [(6, 0, r.tecnico.id)],
                 'state':'execution_ready',
             })
         r.write({'gerada_os': True,'state':'programada', 'os_id': os.id})
@@ -333,15 +339,6 @@ class dgt_preventiva(models.Model):
         
             
         
-<<<<<<< HEAD
-        dias =  datetime.now() - p.data_programada
-        res = dias.total_seconds()
-        res = res/umdia
-        _logger.debug("Dias de atraso float %s", res)
-        _logger.debug("Dias de atraso int %s", int(res))
-        return int(res) 
-=======
->>>>>>> 3baba0238c7a48bfaff5be189a7957513ebb5bf1
     
     # *************************
     #  CRON  gera OS e verifica atrasos de preventiva
@@ -369,18 +366,9 @@ class dgt_preventiva(models.Model):
         #valores negativos dias que faltam para preventiva
         #valores positivos dias de atraso
         res = self.env['dgt_preventiva.dgt_preventiva'].search([('preventiva_executada', '=', False)])
-<<<<<<< HEAD
-        for r in res:
-            dias_de_atraso = r.calc_dias_de_atraso()
-            _logger.debug(dias_de_atraso)
-            r.dias_de_atraso = dias_de_atraso
-            if dias_de_atraso > 0:
-                r.set_preventiva_atrasada()
-=======
         res.calc_dias_de_atraso()
         
             
->>>>>>> 3baba0238c7a48bfaff5be189a7957513ebb5bf1
         
         _logger.info("chamando aviso de atraso de preventiva...")        
         #aviso de manutenção preventiva atrasada

@@ -96,7 +96,7 @@ class DgtOsInherit(models.Model):
         #produto padrao para serviços em geral
         
         if not service_default.id:
-            raise UserError(_("Serviço padrão não configurado. Favor configurá-lo"))
+            raise UserError(_("Serviço padrão não configurado. Favor configurá-lo. Adicione o serviço 'Manutenção Geral'"))
         product_id = service_default
         
              
