@@ -257,9 +257,11 @@ class dgt_preventiva(models.Model):
                 _logger.debug("Adicionando fiscal_position_id %s", contrato.fiscal_position_id.name)
                 analytic_account_id = contrato.analytic_account_id.id
                 fiscal_position_id = contrato.fiscal_position_id.id
+                
+
         except ValueError:
             _logger.debug("Equipamento não pertence a nenhum contrato")
-        description = 'Manutenção Preventiva referente ao mes ' + r.data_programada.strftime('%m/%Y')
+        description = 'Manutenção Preventiva referente ao mês ' + r.data_programada.strftime('%m/%Y')
             
         os = self.env['dgt_os.os'].create({
                 'origin':r.name, 
@@ -275,8 +277,17 @@ class dgt_preventiva(models.Model):
                 'date_execution':  r.data_programada,
                 'maintenance_grupo_instrucao': [(6, 0, grps_inst)],
                 'tecnicos_id': [(6,0,tecnicos)],
+                
+
                 'state':'execution_ready',
             })
+        
+        try:
+            os.add_service()   
+        except ValueError:
+            _logger.debug("Não foi possível adicionar serviço a OS")
+            _logger.debug(ValueError)
+
         r.write({'gerada_os': True,'state':'programada', 'os_id': os.id})
         return os
     
