@@ -8,69 +8,59 @@
 			  
 				
 				<div class="row">
+					<t t-if="o.maintenance_type != 'preventive'">
 					<div class="col-6">
 						<h2>Ordem de Serviço : <span t-field="o.name"/></h2>
 					</div>
+					</t>
+					<t t-if="o.maintenance_type == 'preventive'">
+					
+					<div class="col-6">
+						<h2>Manutenção Preventiva: <span t-field="o.name"/></h2>
+					</div>
+					
+						<div class="col-6">
+							<h2>Mês Referência: 
+							<t t-esc="o.date_scheduled.strftime('%m/%Y')"></t></h2>
+							
+						</div>
+					</t>
+					
 				 <!-- <div  > -->
 					<!-- <img width="100px" height="100px" t-att-src="'/report/barcode/QR/%s' % 'My text in qr code'"/> -->
 					<!-- <img class="col-6 float-right" width="100" height="100" t-att-src="'/report/barcode/QR/%s%s' % ('http://server.diagnostica-ma.com.br:8069/report/pdf/dgt_os.report_ordem_servico/',o.id)"/> -->
 				<!--  </div> -->
 				</div>
-				<div class="row mt32 mb32">
-					<div class="col-6">
-						<h5>Dados do Cliente:</h5>
-					
-						<!-- <div class="col-9"> -->
-							
-						<b><span t-field="o.cliente_id.name"/></b> <br/> CNPJ/CPF:<span t-field="o.cliente_id.cnpj_cpf"/><br/>
-						<span t-field="o.cliente_id.street"/>, <span t-field="o.cliente_id.number"/>, 
-						<span t-field="o.cliente_id.district"/>
-						<span t-field="o.cliente_id.street2"/>-<br/> 
-						<span t-field="o.cliente_id.city_id.name"/>
-						<span t-field="o.cliente_id.state_id.name"/>-
-						<span t-field="o.cliente_id.country_id.name"/>-
-						<span t-field="o.cliente_id.zip"/><br/>
-						<!-- </div> -->
-						<!-- <div class="col-3"> -->
-						<strong>Contato:</strong><br/>
-						<span t-field="o.cliente_id.phone"/><br/> 
-						<span t-field="o.cliente_id.mobile"/><br/>
-						<span t-field="o.cliente_id.email"/>
-						<!-- </div> -->														
-					</div>
-					<div class="col-6">
-					
-						<h5>Dados do Equipamento:</h5>								
-						<b><span t-field="o.equipment_id.name"/></b>
-						NS:<span t-field="o.equipment_id.serial_number"/>
-						Modelo:<span t-if="o.equipment_id.model" t-field="o.equipment_id.model"/>
-						Marca/Fornecedor: <span t-if="o.equipment_id.partner_id.name" t-field="o.equipment_id.partner_id.name"/><br/>
-						<strong>Status:</strong><br/>
-						<span t-field="o.equipment_id.situation_id"/>		
+				<div class="row">
+					<div class="col-12 mt-1">
+						<t t-call="dgt_preventiva.report_cliente_equipment_template"/>
 					</div>
 				</div>
-				<div class="row ">		
-					<t t-if="o.origin">
+				<t t-if="o.origin">
+				<div class="row mt-1 mb-1 ">		
+					
 						<div class="col-6">
 							<strong>Solicitação Origem:</strong><br/>
 							<span t-field="o.origin"/>
 						</div>
-					</t>
+					
 					<!--	<div class="col-6">
 									<strong>Data de impressão:</strong><br/>
 									<span t-esc="time.strftime('%d-%m-%Y')"/>
 								</div>
 							</div>-->
 					<!-- <div class="row mt32 mb32"> -->
-					<div class="col-6">
-						<h3 t-if="o.pecas">Peças</h3>
-					</div>
+					
 					<!-- </div> -->
-				</div>
-				<div class="row mt32 mb32" t-if="o.pecas">
-					<div class="col-12" t-if="o.pecas">
-						<table class="table table-condensed" t-if="o.pecas">
+				</div></t>
+				<div class="row" t-if="o.pecas">
+					<div class="col-12">
+						
+					
+					
+						<table class="table table-sm table-condensed table-striped" t-if="o.pecas">
 							<thead>
+								<tr><th colspan="3"><h4 t-if="o.pecas">Peças <span t-field="o.name"/></h4></th></tr>
 								<tr>
 									<th><strong>Status</strong></th>
 									<th><strong>Descrição</strong></th>
@@ -106,10 +96,14 @@
 		
 				<div class="row" t-if="o.check_list"> 
 					<div class="col-12">
-					<h3 t-if="o.check_list">Check List</h3>
+					
 				
-					<table class="table table-condensed" t-if="o.check_list">
+					<table class="table table-sm table-condensed table-striped" t-if="o.check_list">
 						<thead>
+							<tr>
+										 <th colspan="6"><h4 t-if="o.check_list">Checklist <span t-field="o.maintenance_type"/> -  <span t-field="o.name"/></h4>
+										 </th>
+							</tr>
 							<tr>
 								<!-- <th><strong>Status</strong></th>
 								<th class="text-right"><strong>Quantidade</strong></th> -->
@@ -118,7 +112,7 @@
 								<th><strong>Verificado</strong></th>
 								<th><strong>Medições</strong></th>
 								<th><strong>Unidades</strong></th>
-								<th><strong>Observações</strong></th>
+								<th ><strong>Observações</strong></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -126,7 +120,7 @@
 								<!-- <tr>
 									<td colspan="4"><strong>Peças Programadas</strong></td>
 								</tr> -->
-								<t t-set="i"  t-value="1"/>
+								<t t-set="i" t-value="1"/>
 								<tr t-foreach="o.check_list" t-as="line">
 									<td>
 										<span t-esc="i"/> 
@@ -175,25 +169,36 @@
 					</table>
 					</div>
 				</div>
+				<br/>
+				<div class="row">
+					<div class="col-12">
+						
+					</div>
+				</div>
+				
 				<div class="row" t-if="o.relatorios"> 
 				<div class="col-12">
 				<!--	<p style="page-break-after:always"></p> -->
-					<h3 t-if="o.relatorios">Relatório(s) de Atendimento</h3>
+					
 				
 				
 					
 					<t t-if="o.relatorios">
 						
-						<p style="page-break-before:avoid"></p>
+						<p style="page-break-before:avoid"/>
 							<!-- <div t-if="o.check_list" class="row mt32 mb32" > -->
 								
-								<table class="table table-condensed" t-if="o.relatorios" style="page-break-after:avoid">
+								<table class="table table-sm table-condensed table-striped" t-if="o.relatorios" style="page-break-after:avoid">
 									<thead>
 										<!-- <tr> -->
 											<!-- <th colspan="4"  style="width:10%"><span t-field="line.name"/> -  -->
 											<!-- <strong>Data: </strong><span t-field="line.data_atendimento"/> -->
 											<!-- </th> -->
 										<!-- </tr> -->
+										<tr>
+										 <th colspan="4"><h4 t-if="o.relatorios">Relatório(s) de Atendimento - <span t-field="o.name"/> </h4>
+										 </th>
+										</tr>
 										<tr> 
 											<!-- <th >Início: <t t-esc="'%02d:%02d' % (int(line.hora_inicio), line.hora_inicio % 1 * 60)" />  -->
 											<!-- Término: <t t-esc="'%02d:%02d' % (int(line.hora_termino), line.hora_termino % 1 * 60)" />  </th>  -->
@@ -220,10 +225,10 @@
 													<span t-field="line.pendencias"/>
 												</td>	
 												<td>
-														<t t-esc="'%02d:%02d' % (int(line.hora_inicio), line.hora_inicio % 1 * 60)" />
+														<t t-esc="'%02d:%02d' % (int(line.hora_inicio), line.hora_inicio % 1 * 60)"/>
 												</td>	
 												<td>
-														<t t-esc="'%02d:%02d' % (int(line.hora_termino), line.hora_termino % 1 * 60)" /> 
+														<t t-esc="'%02d:%02d' % (int(line.hora_termino), line.hora_termino % 1 * 60)"/> 
 												</td>
 											</tr>
 											
@@ -236,59 +241,16 @@
 					</t>
 					</div>
 				</div>
-					
+				<div class="row mt-1">
+            <div class="col-12">
+                <t t-call="dgt_preventiva.report_assinatura_template"/>
+            </div>
+        </div>	
 			
-				<div class="row mt32 mb32">
-					<div class="col-6">
-						<strong>Técnico(s):</strong><br/>
-						<span t-if="o.relatorios">
-							<span t-foreach="o.tecnicos_id" t-as="line">
-							<!-- <span t-field="line.user_id.digital_signature" widget="signature"/> -->
-								<img width="3cm" t-att-src="'data:image/png;base64,%s' % to_text(line.user_id.digital_signature)"/>
-								
-								<span text-align="center" t-field="line.name"/><br/>
-							</span>
-						</span>
-					</div>
-					<div class="col-6">
-							Local e data: ________________,_______/______/________
-					</div>
-				</div>
-					
-				<div class="row mt32 mb32">
-						 <div class="col-6">
-						<!--
-
-						_____________________________<br/>
-							Assinatura Técnico -->
-							<br/>
-						</div>
-					<div class="col-6">
-					____________________________________<br/>
-					Assinatura e Carimbo do Cliente
-					</div>
-				</div>
-					<!-- <div style="text-align:right;width:100%">
-					Local e data: ________________,_______/______/________
-					</div>
-					<div style="padding:10px;float:left;text-align:center;width:250px;height:100px">
-					<br/>
-						<br/>
-						_____________________________<br/>
-							Assinatura Técnico
-						
-					</div>
-					<div style="padding:10px;float:right;text-align:center;width:300px;height:100px">
-					<br/>
-						<br/>
-						____________________________________<br/>
-						Assinatura e Carimbo do Cliente
-						
-					</div>-->
-				<div class="oe_structure"/>
 			</div>
 		</t>
 	</t>
 </t>
+
 </template>
 </odoo>

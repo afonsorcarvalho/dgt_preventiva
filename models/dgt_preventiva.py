@@ -71,8 +71,8 @@ class dgt_preventiva(models.Model):
     
     tempo_estimado = fields.Float(
         string=u'Tempo Estimado', 
-        help="Tempo estimado de conclusão da preventiva.",
-    )
+        help="Tempo estimado de conclusão da preventiva.", default=1.0)
+    
     
     data_programada = fields.Datetime(
         string=u'Data Programada',
@@ -185,26 +185,43 @@ class dgt_preventiva(models.Model):
     
     @api.multi
     def action_gera_os(self):
-        pdb.set_trace()
-        _logger.info("gerando os")
+        
+        _logger.info("gerando os!!!")
         _logger.debug(self)
-        for record in self:
-            os = record.gera_os()
-            if os.id:
-                msg = "A Ordem de serviço {} foi gerada com sucesso!!!.".format(os.name)
+#        print(self)
+        #for record in self:
+        if not self.gerada_os:
+            os = self.gera_os()
+                # _logger.info("Os id %s", os)
+                # #if os.id:
+                # msg = "A Ordem de serviço {} foi gerada com sucesso!!!.".format(os.name)
+                # message_id = self.env['dgt_preventiva.message.wizard'].create({'message': _(msg)})
+                # return {
+                #         'name': _('Sucesso!!'),
+                #         'type': 'ir.actions.act_window',
+                #         'view_mode': 'form',
+                #         'res_model': 'dgt_preventiva.message.wizard',
+                #         # pass the id
+                #         'res_id': message_id.id,
+                #         'target': 'new'
+                #     }
+        else:
+                _logger.info("Os já gerada!!!")
+                #if os.id:
+                msg = "A Ordem de serviço já foi gerada!!!."
                 message_id = self.env['dgt_preventiva.message.wizard'].create({'message': _(msg)})
                 return {
-                    'name': _('Sucesso!!'),
-                    'type': 'ir.actions.act_window',
-                    'view_mode': 'form',
-                    'res_model': 'dgt_preventiva.message.wizard',
-                    # pass the id
-                    'res_id': message_id.id,
-                    'target': 'new'
-                }
-               
+                        'name': _('Aviso!!'),
+                        'type': 'ir.actions.act_window',
+                        'view_mode': 'form',
+                        'res_model': 'dgt_preventiva.message.wizard',
+                        # pass the id
+                        'res_id': message_id.id,
+                        'target': 'new'
+                    }
+                return True
         
-        return True
+        return False
     
     #TODO
     # Colocar serviço de manutenção preventiva default do contrato na service.line da Ordem de serviço
@@ -218,14 +235,23 @@ class dgt_preventiva(models.Model):
         contrato = 0
         #pegando grupo de instruções
         grps_inst = [] 
+        tecnicos = []
         
         for g in r.grupo_id:
             _logger.debug("Grupo de instruções adicionado %s", g.name)
+            grps_inst.append(g.id)
+        
+        #pdb.set_trace()
+        _logger.debug("Tecnico da preventiva %s", r.tecnico.name)
+        for t in r.tecnico:
+            tecnicos.append(t.id)
+
         
         _logger.debug("Procurando contratos do equipamento")
         contrato = self.equipment.get_contrato()
         try:
             if contrato:
+                _logger.debug("contrato", contrato)
                 _logger.debug("Achado contrato vigente %s", contrato.name)
                 _logger.debug("Adicionando analytic_account %s", contrato.analytic_account_id.name)
                 _logger.debug("Adicionando fiscal_position_id %s", contrato.fiscal_position_id.name)
@@ -233,22 +259,22 @@ class dgt_preventiva(models.Model):
                 fiscal_position_id = contrato.fiscal_position_id.id
         except ValueError:
             _logger.debug("Equipamento não pertence a nenhum contrato")
-            
+        description = 'Manutenção Preventiva referente ao mes ' + r.data_programada.strftime('%m/%Y')
             
         os = self.env['dgt_os.os'].create({
                 'origin':r.name, 
                 'maintenance_type':'preventive',
                 'cliente_id': r.client.id,
                 'contact_os': 'Automático',
-                'description': r.name,
-                'contrato': contrato,
+                'description': description,
+                'contrato': contrato[0].id,
                 'analytic_account_id': analytic_account_id,
                 'fiscal_position_id': fiscal_position_id,
                 'equipment_id': r.equipment.id,
                 'date_scheduled':  r.data_programada,
                 'date_execution':  r.data_programada,
                 'maintenance_grupo_instrucao': [(6, 0, grps_inst)],
-                'tecnicos_id': [(6, 0, r.tecnico.id)],
+                'tecnicos_id': [(6,0,tecnicos)],
                 'state':'execution_ready',
             })
         r.write({'gerada_os': True,'state':'programada', 'os_id': os.id})

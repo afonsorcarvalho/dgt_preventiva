@@ -15,7 +15,20 @@
                     <tbody>
                         <tr>
                             <td>Data:_______/_________/__________</td>
-                            <td>Data:_______/_________/__________</td>
+                            
+                           
+                            
+                            <td>
+                           
+                            <span t-field="o.sign_client" />
+                            
+                            <t t-if="o.sign_client">
+                                Data: <span t-field="o.signature_client_date" /> 
+                            </t> 
+                            <t t-if="not o.sign_client">
+                                Data:_______/_________/__________
+                            </t>
+                            </td>
                         </tr>
                         <tr>
                             <td width="50%">

@@ -78,10 +78,7 @@ PREVENTIVA
           <button name="action_gera_os"
                 string="Gera OS"
                 type="object"
-                special="cancel"
-                default_focus="0"
-                icon="fa-briefcase"
-                confirm="Tem certeza que deseja Gerar OS pra essa preventiva?"
+               
                 help="Gerar Ordem de Serviço para essa preventiva imediatamente.
                 Lembrando que ela será gerada automaticamente pelo sistema" />
           <field name="state" widget="statusbar" statusbar_visible="" statusbar_colors="{'programada':'decoration-danger','done':'decoration-success', 'cancel':'decoration-muted'}"/>

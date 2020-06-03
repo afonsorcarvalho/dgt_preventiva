@@ -29,9 +29,13 @@
         'views/equipment_category_view.xml',
         'views/dgt_os_form_view.xml',
         'views/dgt_preventiva_contratos.xml',
+        'reports/report_assinatura_template.xml',
         'reports/reports_preventiva.xml',
         'reports/report_preventiva_template.xml',
         'reports/report_cronograma_preventiva_template.xml',
+        'reports/report_cliente_equipment_template.xml',
+        'reports/report_checklist_template.xml',
+
         'data/ir_sequence_data.xml',
         'data/mail_aviso_preventiva_template.xml'
 
