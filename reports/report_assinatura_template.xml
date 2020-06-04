@@ -20,7 +20,7 @@
                             
                             <td>
                            
-                            <span t-field="o.sign_client" />
+                           
                             
                             <t t-if="o.sign_client">
                                 Data: <span t-field="o.signature_client_date" /> 

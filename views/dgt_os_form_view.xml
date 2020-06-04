@@ -61,6 +61,7 @@
                         <field name="peca_qtd"/>
                     </form>
                     <tree string="CheckList" decoration-success="check==True" decoration-danger="check==False" editable="top">
+                        <field name="sequence" widget="handle"/>
                         <field name="instruction" string="Instrução" />
                         <field name="check" string="Realizado"/>
                         <field name="tem_medicao" />
