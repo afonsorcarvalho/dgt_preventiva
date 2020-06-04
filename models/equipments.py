@@ -46,7 +46,7 @@ class CategoryInstructionPreventiva(models.Model):
         comodel_name='dgt_os.equipment.category.instruction.secao',
         ondelete='set null',
     )
-    
+    sequence = fields.Integer(string='Sequence', default=10)
     
     
    
@@ -90,6 +90,7 @@ class CategoryInstrucionPreventivaGrupo(models.Model):
                 
         ],
     )
+    sequence = fields.Integer(string='Sequence', default=10)
 
 
 class CategoryInstrucionPreventivaGrandeza(models.Model):
