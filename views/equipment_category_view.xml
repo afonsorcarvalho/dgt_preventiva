@@ -9,7 +9,7 @@
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='instructions_id']" position="inside">
 						<tree string="Instruções"  editable="bottom" context="{'group_by':'grupo_id'}">
-                                    <field name="sequence" widget="handle" />
+                                   
                                     <field name="name" string="Tarefa" />
 									<field name="troca_peca" string="Peça?"/>
                         			<field name="peca" string="Substiuir peça"/>
