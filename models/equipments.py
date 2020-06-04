@@ -29,6 +29,7 @@ class CategoryInstructionPreventiva(models.Model):
         ondelete="cascade",
         help="Grupo de instruções para dividir em preventivas em tempos diferentes.",
     )
+    sequence = fields.Integer(string='Sequence', default=10)
     tempo_duracao = fields.Float(string="Tempo de duração",help="Tempo em minutos de duração da tarefa da preventiva")
     tem_medicao = fields.Boolean(string='Tem medição?')
     grandeza = fields.Many2one(string = 'Grandeza',comodel_name='dgt_os.equipment.category.instruction.grandeza', ondelete="set null", help="Grandeza da instrução caso envolve medições",)
