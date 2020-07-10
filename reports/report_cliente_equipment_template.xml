@@ -26,6 +26,12 @@
                             <td>
                                 <b><span t-field="o.equipment_id.name"/></b><br/>
                                 <b>Número de Série:</b><span t-field="o.equipment_id.serial_number"/>
+                                <t t-if="o.equipment_id.patrimony">
+                                    <b>Patrimônio:</b> <span t-if="o.equipment_id.patrimony" t-field="o.equipment_id.patrimony"/>	
+                                </t>
+                                <t t-if="o.equipment_id.tag">
+                                    <b>TAG:</b> <span t-if="o.equipment_id.tag" t-field="o.equipment_id.tag"/>	
+                                </t>
                                 <t t-if="o.equipment_id.model">
                                     <b>Modelo:</b> <span t-if="o.equipment_id.model" t-field="o.equipment_id.model"/>	
                                 </t>

@@ -202,10 +202,8 @@
 										<tr> 
 											<!-- <th >Início: <t t-esc="'%02d:%02d' % (int(line.hora_inicio), line.hora_inicio % 1 * 60)" />  -->
 											<!-- Término: <t t-esc="'%02d:%02d' % (int(line.hora_termino), line.hora_termino % 1 * 60)" />  </th>  -->
-											<th><strong>Serviços executados</strong></th> 
-											<th><strong>Pendências</strong></th> 
-											<th>início</th>
-											<th>fim</th>
+											
+											
 										</tr> 
 									</thead> 
 									<tbody>	
@@ -219,16 +217,30 @@
 											</tr>				
 											<tr>
 												<td>
-													<span t-field="line.servico_executados"/>
-												</td>
-												<td>
-													<span t-field="line.pendencias"/>
-												</td>	
-												<td>
-														<t t-esc="'%02d:%02d' % (int(line.hora_inicio), line.hora_inicio % 1 * 60)"/>
-												</td>	
-												<td>
-														<t t-esc="'%02d:%02d' % (int(line.hora_termino), line.hora_termino % 1 * 60)"/> 
+													<strong>Defeitos: </strong>
+													<t t-if="line.tem_defeitos">
+														<span t-field="line.defeitos"/>
+													</t>
+													<t t-if="not line.tem_defeitos">
+														Nenhum
+													</t><br/>
+													<strong>Descrição da execução: </strong>					
+													<span t-field="line.servico_executados"/><br/>
+																							
+													<strong>Pendências: </strong>
+													<t t-if="line.tem_pendencias">	
+														<span t-field="line.pendencias"/>
+													</t>
+													<t t-if="not line.tem_pendencias">
+														Nenhuma
+													</t><br/>
+												
+													
+												
+													<strong>Hora de início: </strong> <t t-esc="'%02d:%02d' % (int(line.hora_inicio), line.hora_inicio % 1 * 60)"/> 
+													
+												
+													<strong>Hora de fim: </strong> <t t-esc="'%02d:%02d' % (int(line.hora_termino), line.hora_termino % 1 * 60)"/> 
 												</td>
 											</tr>
 											
