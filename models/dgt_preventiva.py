@@ -257,19 +257,21 @@ class dgt_preventiva(models.Model):
                 _logger.debug("Adicionando fiscal_position_id %s", contrato.fiscal_position_id.name)
                 analytic_account_id = contrato.analytic_account_id.id
                 fiscal_position_id = contrato.fiscal_position_id.id
+                contrato = contrato.id
                 
 
         except ValueError:
             _logger.debug("Equipamento não pertence a nenhum contrato")
+            contrato = 0
         description = 'Manutenção Preventiva referente ao mês ' + r.data_programada.strftime('%m/%Y')
             
         os = self.env['dgt_os.os'].create({
-                'origin':r.name, 
+                'origin':r.name,
                 'maintenance_type':'preventive',
                 'cliente_id': r.client.id,
                 'contact_os': 'Automático',
                 'description': description,
-                'contrato': contrato[0].id,
+                'contrato': contrato,
                 'analytic_account_id': analytic_account_id,
                 'fiscal_position_id': fiscal_position_id,
                 'equipment_id': r.equipment.id,
@@ -351,6 +353,8 @@ class dgt_preventiva(models.Model):
              ('data_programada', '<', hoje)])
         
         _logger.info("Preventivas atrasadas...")
+        for r in res:
+            _logger.info("Preventiva %s",r.name)
         _logger.info(res)
         res.envia_email_aviso_preventiva('atraso')
         
