@@ -264,9 +264,10 @@ class dgt_preventiva(models.Model):
             except ValueError:
                 _logger.debug("Equipamento não pertence a nenhum contrato")
                 contrato = 0
-            description = 'Manutenção Preventiva referente ao mês ' + r.data_programada.strftime('%m/%Y')
         else:
             contrato = 0
+
+        description = 'Manutenção Preventiva referente ao mês ' + r.data_programada.strftime('%m/%Y')
             
         os = self.env['dgt_os.os'].create({
                 'origin':r.name,
