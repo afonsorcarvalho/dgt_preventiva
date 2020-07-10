@@ -251,7 +251,7 @@ class dgt_preventiva(models.Model):
         contrato = self.equipment.get_contrato()
         try:
             for c in contrato:
-                _logger.debug("contrato", c)
+                #_logger.debug("contrato", c)
                 _logger.debug("Achado contrato vigente %s", c.name)
                 _logger.debug("Adicionando analytic_account %s", c.analytic_account_id.name)
                 _logger.debug("Adicionando fiscal_position_id %s", c.fiscal_position_id.name)
