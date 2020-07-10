@@ -250,14 +250,14 @@ class dgt_preventiva(models.Model):
         _logger.debug("Procurando contratos do equipamento")
         contrato = self.equipment.get_contrato()
         try:
-            if contrato:
-                _logger.debug("contrato", contrato)
-                _logger.debug("Achado contrato vigente %s", contrato.name)
-                _logger.debug("Adicionando analytic_account %s", contrato.analytic_account_id.name)
-                _logger.debug("Adicionando fiscal_position_id %s", contrato.fiscal_position_id.name)
-                analytic_account_id = contrato.analytic_account_id.id
-                fiscal_position_id = contrato.fiscal_position_id.id
-                contrato = contrato.id
+            for c in contrato
+                _logger.debug("contrato", c)
+                _logger.debug("Achado contrato vigente %s", c.name)
+                _logger.debug("Adicionando analytic_account %s", c.analytic_account_id.name)
+                _logger.debug("Adicionando fiscal_position_id %s", c.fiscal_position_id.name)
+                analytic_account_id = c.analytic_account_id.id
+                fiscal_position_id = c.fiscal_position_id.id
+                contrato = c.id
                 
 
         except ValueError:
