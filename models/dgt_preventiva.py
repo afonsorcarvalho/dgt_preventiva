@@ -249,21 +249,24 @@ class dgt_preventiva(models.Model):
         
         _logger.debug("Procurando contratos do equipamento")
         contrato = self.equipment.get_contrato()
-        try:
-            for c in contrato:
-                #_logger.debug("contrato", c)
-                _logger.debug("Achado contrato vigente %s", c.name)
-                _logger.debug("Adicionando analytic_account %s", c.analytic_account_id.name)
-                _logger.debug("Adicionando fiscal_position_id %s", c.fiscal_position_id.name)
-                analytic_account_id = c.analytic_account_id.id
-                fiscal_position_id = c.fiscal_position_id.id
-                contrato = c.id
-                
+        if type(contrato) is list:
+            try:
+                for c in contrato:
+                    #_logger.debug("contrato", c)
+                    _logger.debug("Achado contrato vigente %s", c.name)
+                    _logger.debug("Adicionando analytic_account %s", c.analytic_account_id.name)
+                    _logger.debug("Adicionando fiscal_position_id %s", c.fiscal_position_id.name)
+                    analytic_account_id = c.analytic_account_id.id
+                    fiscal_position_id = c.fiscal_position_id.id
+                    contrato = c.id
+                    
 
-        except ValueError:
-            _logger.debug("Equipamento não pertence a nenhum contrato")
+            except ValueError:
+                _logger.debug("Equipamento não pertence a nenhum contrato")
+                contrato = 0
+            description = 'Manutenção Preventiva referente ao mês ' + r.data_programada.strftime('%m/%Y')
+        else:
             contrato = 0
-        description = 'Manutenção Preventiva referente ao mês ' + r.data_programada.strftime('%m/%Y')
             
         os = self.env['dgt_os.os'].create({
                 'origin':r.name,
