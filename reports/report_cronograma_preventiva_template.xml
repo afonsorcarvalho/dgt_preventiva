@@ -21,7 +21,7 @@
 
 						<t t-set="i" t-value="0"/>
 						<t t-set="meses" t-value="o.get_meses_que_tem_preventivas()"/>
-						<t t-set="ano" t-value="2020"/>
+						<t t-set="ano" t-value="2021"/>
 						
 
 						<t t-foreach="meses" t-as="num_mes">
