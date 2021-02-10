@@ -40,7 +40,7 @@
                                 </t>
                                 <br/>
                                 <t t-if="o.equipment_location">
-                                    <b>Setor: </b><span t-if="o.equipment_location" t-field="o.equipment_location"/><br/>	
+                                    <b>Local: </b><span t-if="o.equipment_location" t-field="o.equipment_location"/><br/>	
                                 </t>
                                 <strong>Status:</strong><br/>
                                 <span t-field="o.equipment_id.situation_id"/>	
