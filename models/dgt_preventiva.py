@@ -391,7 +391,7 @@ class dgt_preventiva(models.Model):
     # *************************
     @api.multi
     def cron_agenda_preventiva(self):
-        dias_antecipa_gera_os = 10
+        dias_antecipa_gera_os = 5
         dias_avisa_prev = 2
         _logger.info("Entrou no agendamento da preventiva...")
         hoje = fields.Date.today()
@@ -583,6 +583,8 @@ class CronogramaPreventiva(models.Model):
             _logger.info(grupo_instructions)
             for grupo_instruction in grupo_instructions:
                 dias = grupo_instruction.periodicidade
+                _logger.info("Periodicidade")
+                _logger.info(dias)
                 if self.date_start >= today:
                     date_current = datetime.combine(self.date_start,hora_ini_dia)
                 else:
