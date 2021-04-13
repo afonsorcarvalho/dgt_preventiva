@@ -120,7 +120,7 @@
 													</t>
 												</td>
 												<td>
-													<span t-field="line.observations" />
+												<!--	<span t-field="line.observations" />-->
 												</td>
 											</tr>
 										</t>
