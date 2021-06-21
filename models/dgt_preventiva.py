@@ -497,7 +497,7 @@ class CronogramaPreventiva(models.Model):
     #TODO
     # Pegar o ano do cronograma 
     #usado no report da impressao
-    def get_preventivas(self, ano=2020,mes=0):
+    def get_preventivas(self, ano=2021,mes=0):
                
         
         if mes:
@@ -525,7 +525,7 @@ class CronogramaPreventiva(models.Model):
     #usado no report da impressao
     def get_calendar(self):
         cal = calendar.Calendar()
-        res = cal.yeardayscalendar(2020,1)
+        res = cal.yeardayscalendar(2021,1)
         return res
     #usado no report da impressao
     def get_calendar_mes(self,ano,mes):
