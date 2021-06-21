@@ -63,6 +63,8 @@ class DgtOsInherit(models.Model):
         _logger.debug("Contrato: %s",self.contrato.name)
         _logger.debug(self.contrato)
         result.add_service()
+        result.default_analytic_account()
+        result.default_fiscal_position()
         return result
     
     @api.onchange('date_scheduled')
@@ -167,6 +169,20 @@ class DgtOsInherit(models.Model):
                 _logger.debug("Não configurado conta analitica no contrato")
         else:
              _logger.debug("Equipamento fora de contrato, nenhuma conta analítica configurada")
+
+    def default_fiscal_position(self):
+        #se tiver contrato
+        self.fiscal_position_id = 0
+        _logger.debug("configurando posição fiscal") 
+        if self.contrato.id:
+            _logger.debug("Equipamento em contrato") 
+            if self.contrato.fiscal_position_id.id:
+                _logger.debug("posição fiscal  do contrato: %s",self.contrato.fiscal_position_id.name) 
+                self.fiscal_position_id = self.contrato.fiscal_position_id.id
+            else:
+                _logger.debug("Não configurado posição fiscal no contrato")
+        else:
+             _logger.debug("Equipamento fora de contrato, nenhuma posição fiscal configurada configurada")
                  
     @api.onchange('equipment_id')
     def _change_equipment(self):
@@ -182,7 +198,8 @@ class DgtOsInherit(models.Model):
                                  
             self.add_service()
             self.default_analytic_account()
-            
+            self.default_fiscal_position()
+
     def create_checklist(self):
         """Cria a lista de verificacao caso a OS seja preventiva"""
         if self.maintenance_type == 'preventive':
