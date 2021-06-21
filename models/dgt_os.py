@@ -54,6 +54,16 @@ class DgtOsInherit(models.Model):
         string=u'Nome do Cliente Assinatura',
     )
     digital_signature_client = fields.Binary(string='Assinatura Cliente')
+
+    @api.model
+    def create(self, values):
+        result = super().create(values)
+        _logger.debug("Equipamento selecionado: %s",self.equipment_id)
+        result.contrato = result.equipment_id.get_contrato()
+        _logger.debug("Contrato: %s",self.contrato.name)
+        _logger.debug(self.contrato)
+        result.add_service()
+        return result
     
     @api.onchange('date_scheduled')
     def onchange_scheduled_date(self):
