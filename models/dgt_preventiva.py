@@ -551,7 +551,13 @@ class CronogramaPreventiva(models.Model):
     
     '''
     def report_get_preventivas_date(self,data_programada):
-        res = self.env['dgt_preventiva.dgt_preventiva'].search([('cronograma', '=', self.id),('data_programada','=',data_programada)], offset=0, limit=None, order=None, count=False)
+        res = self.env['dgt_preventiva.dgt_preventiva'].search([(
+            'cronograma', '=', self.id),
+            ('data_programada', '=', data_programada)],
+            offset=0,
+            limit=None,
+            order='data_programada ASC',
+            count=False)
         return res
    
     ''' Usado no report_cronograma_preventiva_template da impressao do cronograma
