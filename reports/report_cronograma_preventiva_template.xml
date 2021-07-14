@@ -65,13 +65,25 @@
 													<t t-esc="preventiva.equipment.name"/>-NS:<t t-esc="preventiva.equipment.serial_number"/>
 												</td>
 												<t t-foreach="o.cal.itermonthdays(ano,num_mes)" t-as="dia">
-													<td>
+													<t t-if="dia == preventiva.data_programada.day">
+														
+														
 														<t t-if="dia == preventiva.data_programada.day">
-
-															<t t-esc="dia"/>
+															<td class="active">
+																<t t-esc="dia"/>
+															</td>
 														</t>
+														<t t-if="dia != preventiva.data_programada.day">
+															<td>
+																
+															</td>
 
-													</td>
+														</t> 
+														
+														
+
+														
+													</t>
 												</t>
 
 											</tr>
