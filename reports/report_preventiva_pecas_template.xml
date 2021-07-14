@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="dgt_preventiva.report_preventiva_pecas_template">
+		<div class="row">
+			<div class="col-12">
+				<t t-if="line.parts_request">
+					<t t-foreach="line.parts_request" t-as="line_pecas">
+						
+							
+								Requisitado - <span t-field="line_pecas.name" /> - QTD <span t-field="line_pecas.product_uom_qty" /> <br/>
+							
+						
+													
+						
+						
+						
+					</t>
+				</t>
+                <t-if t-if="line.parts_application">
+					<t t-foreach="line.parts_application" t-as="line_pecas_applied">
+						
+							
+								Aplicado - <span t-field="line_pecas_applied.parts_request.name" /> - QTD <span t-field="line_pecas_applied.parts_request.product_uom_qty" /><br/>
+							
+						
+													
+						
+						
+						
+					</t>
+				</t-if>
+				
+			</div>
+		</div>
+	</template>
+</odoo>
