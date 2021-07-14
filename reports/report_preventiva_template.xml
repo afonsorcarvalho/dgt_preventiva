@@ -1,268 +1,311 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="dgt_preventiva.report_preventiva_template">
-<t t-call="web.html_container">
-	<t t-foreach="docs" t-as="o">
-		<t t-call="web.external_layout">
-			<div class="page">
-			  
-				
-				<div class="row">
-					<t t-if="o.maintenance_type != 'preventive'">
-					<div class="col-6">
-						<h2>Ordem de Serviço : <span t-field="o.name"/></h2>
-					</div>
-					</t>
-					<t t-if="o.maintenance_type == 'preventive'">
-					
-					<div class="col-6">
-						<h2>Manutenção Preventiva: <span t-field="o.name"/></h2>
-					</div>
-					
-						<div class="col-6">
-							<h2>Mês Referência: 
-							<t t-esc="o.date_scheduled.strftime('%m/%Y')"></t></h2>
-							
-						</div>
-					</t>
-					
-				 <!-- <div  > -->
-					<!-- <img width="100px" height="100px" t-att-src="'/report/barcode/QR/%s' % 'My text in qr code'"/> -->
-					<!-- <img class="col-6 float-right" width="100" height="100" t-att-src="'/report/barcode/QR/%s%s' % ('http://server.diagnostica-ma.com.br:8069/report/pdf/dgt_os.report_ordem_servico/',o.id)"/> -->
-				<!--  </div> -->
-				</div>
-				<div class="row">
-					<div class="col-12 mt-1">
-						<t t-call="dgt_preventiva.report_cliente_equipment_template"/>
-					</div>
-				</div>
-				<t t-if="o.origin">
-				<div class="row mt-1 mb-1 ">		
-					
-						<div class="col-6">
-							<strong>Solicitação Origem:</strong><br/>
-							<span t-field="o.origin"/>
-						</div>
-					
-					<!--	<div class="col-6">
-									<strong>Data de impressão:</strong><br/>
-									<span t-esc="time.strftime('%d-%m-%Y')"/>
+	<template id="dgt_preventiva.report_preventiva_template">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.external_layout">
+					<div class="page">
+						<div class="row">
+							<t t-if="o.maintenance_type != 'preventive'">
+								<div class="col-6">
+									<h2>
+										Ordem de Serviço :
+										<span t-field="o.name" />
+									</h2>
 								</div>
-							</div>-->
-					<!-- <div class="row mt32 mb32"> -->
-					
-					<!-- </div> -->
-				</div></t>
-				<div class="row" t-if="o.pecas">
-					<div class="col-12">
-						
-					
-					
-						<table class="table table-sm table-condensed table-striped" t-if="o.pecas">
-							<thead>
-								<tr><th colspan="3"><h4 t-if="o.pecas">Peças <span t-field="o.name"/></h4></th></tr>
-								<tr>
-									<th><strong>Status</strong></th>
-									<th><strong>Descrição</strong></th>
-									<th class="text-right"><strong>Quantidade</strong></th>
-								</tr>
-							</thead>
-							<tbody>
-								<t t-if="o.pecas">
-									<!-- <tr>
-										<td colspan="4"><strong>Peças Programadas</strong></td>
-									</tr> -->
-									<tr t-foreach="o.pecas" t-as="line">
-										<td>
-											<span t-if="line.aplicada">Aplicada</span>
-											<span t-else="">Não Aplicada</span>
-											
-											
-										</td>
-										<td>
-											<span t-field="line.name"/>
-										</td>
-										<td class="text-right">
-										<span t-field="line.product_uom_qty"/>
-											<span t-field="line.product_uom" groups="product.group_uom"/>
-										</td>
-										
-									</tr>
-								</t>
-							</tbody>
-						</table>
-					</div>
-				</div>
-		
-				<div class="row" t-if="o.check_list"> 
-					<div class="col-12">
-					
-				
-					<table class="table table-sm table-condensed table-striped" t-if="o.check_list">
-						<thead>
-							<tr>
-										 <th colspan="6"><h4 t-if="o.check_list">Checklist <span t-field="o.maintenance_type"/> -  <span t-field="o.name"/></h4>
-										 </th>
-							</tr>
-							<tr>
-								<!-- <th><strong>Status</strong></th>
-								<th class="text-right"><strong>Quantidade</strong></th> -->
-								<th><strong>Item</strong></th>
-								<th><strong>Instrução</strong></th>
-								<th><strong>Verificado</strong></th>
-								<th><strong>Medições</strong></th>
-								<th><strong>Unidades</strong></th>
-								<th ><strong>Observações</strong></th>
-							</tr>
-						</thead>
-						<tbody>
-							<t t-if="o.check_list">
-								<!-- <tr>
-									<td colspan="4"><strong>Peças Programadas</strong></td>
-								</tr> -->
-								<t t-set="i" t-value="1"/>
-								<tr t-foreach="o.check_list" t-as="line">
-									<td>
-										<span t-esc="i"/> 
-										<t t-set="i" t-value="i+1"/> 
-									</td>							
-									<td>
-										
-											<span t-field="line.instruction"/>
-										
-									</td>
-									<td>
-										<t t-if="line.check == True">
-											Sim
-										</t>
-										<t t-else="">
-											Não
-										</t>	
-									</td>
-									<td>
-										<t t-if="line.tem_medicao == True">
-											<t t-if="line.check == True">
-												<span t-field="line.medicao"/>
-											</t>
-											<t t-else="">
-												Não Medido
-											</t>
-										</t>
-										<t t-else="">
-											xxxxxxx	
-										</t>
-									</td>
-									<td>
-										<t t-if="line.tem_medicao == True">
-											<span t-field="line.unidade"/>
-										</t>
-										<t t-else="">
-											xxxxxxx
-										</t>
-									</td>
-									<td>
-										<span t-field="line.observations"/>
-									</td>
-								</tr>
 							</t>
-						</tbody>
-					</table>
-					</div>
-				</div>
-				<br/>
-				<div class="row">
-					<div class="col-12">
-						
-					</div>
-				</div>
-				
-				<div class="row" t-if="o.relatorios"> 
-				<div class="col-12">
-				<!--	<p style="page-break-after:always"></p> -->
-					
-				
-				
-					
-					<t t-if="o.relatorios">
-						
-						<p style="page-break-before:avoid"/>
-							<!-- <div t-if="o.check_list" class="row mt32 mb32" > -->
-								
-								<table class="table table-sm table-condensed table-striped" t-if="o.relatorios" style="page-break-after:avoid">
+							<t t-if="o.maintenance_type == 'preventive'">
+								<div class="col-6">
+									<h2>
+										Manutenção Preventiva:
+										<span t-field="o.name" />
+									</h2>
+								</div>
+								<div class="col-6">
+									<h2>
+										Mês Referência:
+										<t t-esc="o.date_scheduled.strftime('%m/%Y')">
+										</t>
+									</h2>
+								</div>
+							</t>
+							<!-- <div  > -->
+							<!-- <img width="100px" height="100px" t-att-src="'/report/barcode/QR/%s' % 'My text in qr code'"/> -->
+							<!-- <img class="col-6 float-right" width="100" height="100" t-att-src="'/report/barcode/QR/%s%s' % ('http://server.diagnostica-ma.com.br:8069/report/pdf/dgt_os.report_ordem_servico/',o.id)"/> -->
+							<!-- </div> -->
+						</div>
+						<div class="row">
+							<div class="col-12 mt-1">
+								<t t-call="dgt_preventiva.report_cliente_equipment_template" />
+							</div>
+						</div>
+						<t t-if="o.origin">
+							<div class="row mt-1 mb-1 ">
+								<div class="col-6">
+									<strong>
+										Solicitação Origem:
+									</strong>
+									<br />
+									<span t-field="o.origin" />
+								</div>
+								<!--
+								<div class="col-6">
+								<strong>Data de impressão:</strong><br/>
+								<span t-esc="time.strftime('%d-%m-%Y')"/>
+								</div>
+								</div>
+								-->
+							</div>
+						</t>
+						<div class="row" t-if="o.check_list">
+							<div class="col-12">
+								<table class="table table-sm table-condensed table-striped" t-if="o.check_list">
 									<thead>
-										<!-- <tr> -->
-											<!-- <th colspan="4"  style="width:10%"><span t-field="line.name"/> -  -->
-											<!-- <strong>Data: </strong><span t-field="line.data_atendimento"/> -->
-											<!-- </th> -->
-										<!-- </tr> -->
 										<tr>
-										 <th colspan="4"><h4 t-if="o.relatorios">Relatório(s) de Atendimento - <span t-field="o.name"/> </h4>
-										 </th>
+											<th colspan="6">
+												<h4 t-if="o.check_list">
+													Checklist
+													<span t-field="o.maintenance_type" />
+													-
+													<span t-field="o.name" />
+												</h4>
+											</th>
 										</tr>
-										<tr> 
-											<!-- <th >Início: <t t-esc="'%02d:%02d' % (int(line.hora_inicio), line.hora_inicio % 1 * 60)" />  -->
-											<!-- Término: <t t-esc="'%02d:%02d' % (int(line.hora_termino), line.hora_termino % 1 * 60)" />  </th>  -->
-											
-											
-										</tr> 
-									</thead> 
-									<tbody>	
-										<t t-foreach="o.relatorios" t-as="line">
-											<tr>	
-												<td colspan="99">
-													<strong><span t-field="line.name"/> - 
-													Data: <span t-field="line.data_atendimento"/> </strong>
-													
-												</td>	
-											</tr>				
+										<tr>
+											<th>
+												<strong>
+													Item
+												</strong>
+											</th>
+											<th>
+												<strong>
+													Instrução
+												</strong>
+											</th>
+											<th>
+												<strong>
+													Verificado
+												</strong>
+											</th>
+											<th>
+												<strong>
+													Medições
+												</strong>
+											</th>
+											<th>
+												<strong>
+													Unidades
+												</strong>
+											</th>
+											<th>
+												<strong>
+													Observações
+												</strong>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<t t-if="o.check_list">
+											<!--
 											<tr>
+											<td colspan="4"><strong>Peças Programadas</strong></td>
+											</tr>
+											-->
+											<t t-set="i" t-value="1" />
+											<tr t-foreach="o.check_list" t-as="line">
 												<td>
-													<strong>Defeitos: </strong>
-													<t t-if="line.tem_defeitos">
-														<span t-field="line.defeitos"/>
+													<span t-esc="i" />
+													<t t-set="i" t-value="i+1" />
+												</td>
+												<td>
+													<span t-field="line.instruction" />
+												</td>
+												<td>
+													<t t-if="line.check == True">
+														Sim
 													</t>
-													<t t-if="not line.tem_defeitos">
-														Nenhum
-													</t><br/>
-													<strong>Descrição da execução: </strong>					
-													<span t-field="line.servico_executados"/><br/>
-																							
-													<strong>Pendências: </strong>
-													<t t-if="line.tem_pendencias">	
-														<span t-field="line.pendencias"/>
+													<t t-else="">
+														Não
 													</t>
-													<t t-if="not line.tem_pendencias">
-														Nenhuma
-													</t><br/>
-												
-													
-												
-													<strong>Hora de início: </strong> <t t-esc="'%02d:%02d' % (int(line.hora_inicio), line.hora_inicio % 1 * 60)"/> 
-													
-												
-													<strong>Hora de fim: </strong> <t t-esc="'%02d:%02d' % (int(line.hora_termino), line.hora_termino % 1 * 60)"/> 
+												</td>
+												<td>
+													<t t-if="line.tem_medicao == True">
+														<t t-if="line.check == True">
+															<span t-field="line.medicao" />
+														</t>
+														<t t-else="">
+															Não Medido
+														</t>
+													</t>
+													<t t-else="">
+														xxxxxxx
+													</t>
+												</td>
+												<td>
+													<t t-if="line.tem_medicao == True">
+														<span t-field="line.unidade" />
+													</t>
+													<t t-else="">
+														xxxxxxx
+													</t>
+												</td>
+												<td>
+													<span t-field="line.observations" />
 												</td>
 											</tr>
-											
-										</t>					
+										</t>
 									</tbody>
 								</table>
-								
-							<!--</div>-->
-						
-					</t>
+							</div>
+						</div>
+						<br />
+						<div class="row">
+							<div class="col-12">
+							</div>
+						</div>
+						<div class="row" t-if="o.relatorios">
+							<div class="col-12">
+								<!-- <p style="page-break-after:always"></p> -->
+								<t t-if="o.relatorios">
+									<p style="page-break-before:avoid" />
+									<!-- <div t-if="o.check_list" class="row mt32 mb32" > -->
+									<table class="table table-sm table-condensed table-striped" t-if="o.relatorios" style="page-break-after:avoid">
+										<thead>
+											<tr>
+												<th colspan="4">
+													<h4 t-if="o.relatorios">
+														Relatório(s) de Atendimento -
+														<span t-field="o.name" />
+													</h4>
+												</th>
+											</tr>
+											<tr>
+											</tr>
+										</thead>
+										<tbody>
+											<t t-foreach="o.relatorios" t-as="line">
+												<tr>
+													<td colspan="99">
+														<h5>
+															<strong>
+																<span t-field="line.name" />
+																-
+																Data:
+																<span t-field="line.data_atendimento" />
+															</strong>
+														</h5>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<strong>
+															Defeitos:
+														</strong>
+														<t t-if="line.tem_defeitos">
+															<span t-field="line.defeitos" />
+														</t>
+														<t t-if="not line.tem_defeitos">
+															Nenhum
+														</t>
+														<br />
+														<strong>
+															Descrição da execução:
+														</strong>
+														<span t-field="line.servico_executados" />
+														<br />
+														<t t-call="dgt_preventiva.report_preventiva_pecas_template" />
+														<strong>
+															Pendências:
+														</strong>
+														<t t-if="line.tem_pendencias">
+															<span t-field="line.pendencias" />
+														</t>
+														<t t-if="not line.tem_pendencias">
+															Nenhuma
+														</t>
+														<br />
+														<strong>
+															Hora de início:
+														</strong>
+														<t t-esc="'%02d:%02d' % (int(line.hora_inicio), line.hora_inicio % 1 * 60)" />
+														<strong>
+															Hora de fim:
+														</strong>
+														<t t-esc="'%02d:%02d' % (int(line.hora_termino), line.hora_termino % 1 * 60)" />
+														<br></br>
+														
+													</td>
+												</tr>
+												<tr><td></td></tr>
+												<tr><td></td></tr>
+											</t>
+										</tbody>
+									</table>
+								</t>
+							</div>
+						</div>
+						<div class="row" t-if="o.pecas">
+							<div class="col-12">
+								<table class="table table-sm table-condensed table-striped" t-if="o.pecas">
+									<thead>
+										<tr>
+											<th colspan="3">
+												<h4 t-if="o.pecas">
+													Resumo das Peças Aplicadas/Requisitadas
+													<span t-field="o.name" />
+												</h4>
+											</th>
+										</tr>
+										<tr>
+											<th>
+												<strong>
+													Status
+												</strong>
+											</th>
+											<th>
+												<strong>
+													Descrição
+												</strong>
+											</th>
+											<th class="text-right">
+												<strong>
+													Quantidade
+												</strong>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<t t-if="o.pecas">
+											<tr t-foreach="o.pecas" t-as="line">
+												<td>
+													<span t-if="line.aplicada">
+														Aplicada
+													</span>
+													<span t-else="">
+														Requisitada
+													</span>
+												</td>
+												<td>
+													<span t-field="line.name" />
+												</td>
+												<td class="text-right">
+													<span t-field="line.product_uom_qty" />
+													<span t-field="line.product_uom" groups="product.group_uom" />
+												</td>
+											</tr>
+										</t>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="row mt-1">
+							<div class="col-12">
+								<t t-call="dgt_preventiva.report_assinatura_template" />
+							</div>
+						</div>
 					</div>
-				</div>
-				<div class="row mt-1">
-            <div class="col-12">
-                <t t-call="dgt_preventiva.report_assinatura_template"/>
-            </div>
-        </div>	
-			
-			</div>
+				</t>
+			</t>
 		</t>
-	</t>
-</t>
-
-</template>
+	</template>
 </odoo>

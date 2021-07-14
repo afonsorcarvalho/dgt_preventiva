@@ -20,16 +20,16 @@
 
 
 						<t t-set="i" t-value="0"/>
-						<t t-set="meses" t-value="o.get_meses_que_tem_preventivas()"/>
 						<t t-set="ano" t-value="2021"/>
+						<t t-set="meses" t-value="o.report_get_meses_que_tem_preventivas(ano)"/>
+						
 						
 
 						<t t-foreach="meses" t-as="num_mes">
 							<div class="row">
 								<h3 style="margin-top:50px">
 									<t t-log="num_mes"/>
-									<t t-esc="o.Meses[num_mes-1]"/>
-
+									<t t-esc="o.meses_nome[num_mes-1]"/>
 								</h3>
 							</div>
 							<div class="row" style="page-break-before: avoid;">
@@ -39,14 +39,14 @@
 										<tr>
 											<th rowspan="2">Equipamentos</th>
 											<t t-set="s" t-value="1"/>
-											<t t-foreach="o.get_number_weeks(ano,num_mes)" t-as="semana">
+											<t t-foreach="o.report_get_number_weeks(ano,num_mes)" t-as="semana">
 												<th colspan="7">Semana <t t-esc="s"/>
 												</th>
 												<t t-set="s" t-value="s+1"/>
 											</t>
 										</tr>
 										<tr>
-											<t t-foreach="o.get_number_weeks(ano,num_mes)" t-as="semana">
+											<t t-foreach="o.report_get_number_weeks(ano,num_mes)" t-as="semana">
 
 												<t t-foreach="o.Diasemana" t-as="nome_semana">
 													<th>
@@ -59,11 +59,10 @@
 										</tr>
 									</thead>
 									<tbody>
-										<t t-foreach="o.get_preventivas(ano,num_mes)" t-as="preventiva">
+										<t t-foreach="o.report_get_preventivas(ano,num_mes)" t-as="preventiva">
 											<tr>
 												<td>
-													<t t-esc="preventiva.equipment.name"/>
--NS:<t t-esc="preventiva.equipment.serial_number"/>
+													<t t-esc="preventiva.equipment.name"/>-NS:<t t-esc="preventiva.equipment.serial_number"/>
 												</td>
 												<t t-foreach="o.cal.itermonthdays(ano,num_mes)" t-as="dia">
 													<td>

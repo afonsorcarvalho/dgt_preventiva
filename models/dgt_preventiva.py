@@ -6,6 +6,7 @@ from datetime import time
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
+from dateutil.relativedelta import relativedelta
 from calendar import monthrange
 from calendar import monthcalendar
 from odoo.exceptions import UserError
@@ -188,23 +189,9 @@ class dgt_preventiva(models.Model):
         
         _logger.info("gerando os!!!")
         _logger.debug(self)
-#        print(self)
-        #for record in self:
         if not self.gerada_os:
             os = self.gera_os()
-                # _logger.info("Os id %s", os)
-                # #if os.id:
-                # msg = "A Ordem de serviço {} foi gerada com sucesso!!!.".format(os.name)
-                # message_id = self.env['dgt_preventiva.message.wizard'].create({'message': _(msg)})
-                # return {
-                #         'name': _('Sucesso!!'),
-                #         'type': 'ir.actions.act_window',
-                #         'view_mode': 'form',
-                #         'res_model': 'dgt_preventiva.message.wizard',
-                #         # pass the id
-                #         'res_id': message_id.id,
-                #         'target': 'new'
-                #     }
+             
         else:
                 _logger.info("Os já gerada!!!")
                 #if os.id:
@@ -215,7 +202,6 @@ class dgt_preventiva(models.Model):
                         'type': 'ir.actions.act_window',
                         'view_mode': 'form',
                         'res_model': 'dgt_preventiva.message.wizard',
-                        # pass the id
                         'res_id': message_id.id,
                         'target': 'new'
                     }
@@ -337,14 +323,6 @@ class dgt_preventiva(models.Model):
         
         res.envia_email_aviso_preventiva()
         
-       
-      #  for r in res:
-      #      dias_de_atraso = r.calc_dias_de_atraso()
-      #      _logger.info(dias_de_atraso)
-      #      r.dias_de_atraso = dias_de_atraso[0]
-      #      if dias_de_atraso[0] > 0:
-    #         r.set_preventiva_atrasada()
-    
     @api.multi
     def aviso_preventiva_atrasada(self):
         _logger.info("entrou no aviso de preventiva atrasada...")
@@ -447,7 +425,7 @@ class CronogramaPreventiva(models.Model):
 	]
     Diasemana = ['S','T','Q',
                 'Q','S','S','D']
-    Meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+    meses_nome=['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
            'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
     
     name = fields.Char(
@@ -495,49 +473,91 @@ class CronogramaPreventiva(models.Model):
 		string = 'Técnicos')
     
     #TODO
-    # Pegar o ano do cronograma 
-    #usado no report da impressao
-    def get_preventivas(self, ano=2021,mes=0):
-               
+    # Pegar o ano do cronograma
+    
+    ''' Usado no report_cronograma_preventiva_template da impressao do cronograma
+        Retorna todas as preventivas de um dado ano e mes
+    
+    '''
+    
+    def report_get_preventivas(self, ano=2021,mes=0):        
+ 
+        _logger.debug("GET PREVENTIVAS")
+        _logger.debug("ANO")
+        _logger.debug(ano)
+        _logger.debug("MES")
+        _logger.debug(mes)
         
-        if mes:
-            first_day =datetime(ano,mes,1,0,0,0,0).strftime("%Y-%m-%d %I:%M:%S")
-            if mes == 12:
-                mes = 1
-                ano = ano+1
-            last_day = datetime(ano,mes,monthrange(ano,mes)[1],23,59,59,0).strftime("%Y-%m-%d %I:%M:%S")
-            res=self.env['dgt_preventiva.dgt_preventiva'].search([('cronograma', '=', self.id),('data_programada', '>=', first_day),('data_programada', '<', last_day)], offset=0, limit=None, order='data_programada ASC', count=False)
-            self.preventiva_data = res
-        else:
-            res=self.env['dgt_preventiva.dgt_preventiva'].search([('cronograma', '=', self.id)], offset=0, limit=None, order='data_programada ASC', count=False)
-            self.preventiva_data = res
+        first_day =datetime(ano,mes,1,0,0,0,0).strftime("%Y-%m-%d %I:%M:%S")
+        last_day = datetime(ano, mes, monthrange(ano, mes)[1], 23, 59, 59, 0).strftime("%Y-%m-%d %I:%M:%S")
+        
+        res = self.env['dgt_preventiva.dgt_preventiva'].search([(
+            'cronograma', '=', self.id),
+            ('data_programada', '>=', first_day),
+            ('data_programada', '<', last_day)],
+            offset=0,
+            limit=None,
+            order='data_programada ASC',
+            count=False)
+
+        _logger.debug(res)
         return res
    
-    #usado no report da impressao
-    def get_meses_que_tem_preventivas(self):
-        res=self.env['dgt_preventiva.dgt_preventiva'].search([('cronograma', '=', self.id)], offset=0, limit=None, order='data_programada ASC', count=False)
+   
+    ''' Usado no report_cronograma_preventiva_template da impressao do cronograma
+        Retorna quais os meses que tem preventivas
+    
+    '''
+    def report_get_meses_que_tem_preventivas(self, ano):
+        first_day = datetime(ano,1, 1, 0, 0, 0, 0).strftime("%Y-%m-%d %I:%M:%S")
+        last_day = datetime(ano,12,monthrange(ano,12)[1],23,59,59,0).strftime("%Y-%m-%d %I:%M:%S")
+        res = self.env['dgt_preventiva.dgt_preventiva'].search([(
+            'cronograma', '=', self.id),
+            ('data_programada', '>=', first_day),
+            ('data_programada', '<', last_day)
+            ],
+            offset=0,
+            limit=None,
+            order='data_programada ASC',
+            count=False)
+
         meses_com_preventiva = []
+        _logger.debug("Meses com preventiva:")
         for rec in res:
             rec_mes = rec.data_programada.month
+            
             meses_com_preventiva = list(set(meses_com_preventiva) | set([rec_mes]))
+
+        _logger.debug(meses_com_preventiva)
         return meses_com_preventiva
    
-    #usado no report da impressao
-    def get_calendar(self):
+    ''' Usado no report_cronograma_preventiva_template da impressao do cronograma
+    
+    '''
+    def report_get_calendar(self):
         cal = calendar.Calendar()
         res = cal.yeardayscalendar(2021,1)
         return res
-    #usado no report da impressao
-    def get_calendar_mes(self,ano,mes):
+
+    ''' Usado no report_cronograma_preventiva_template da impressao do cronograma
+    
+    '''
+    def report_get_calendar_mes(self,ano,mes):
         cal = calendar.Calendar()
         res = cal.yeardayscalendar(ano,mes)
         return res
-    #usado no report da impressao
-    def get_preventivas_date(self,data_programada):
+    
+    ''' Usado no report_cronograma_preventiva_template da impressao do cronograma
+    
+    '''
+    def report_get_preventivas_date(self,data_programada):
         res = self.env['dgt_preventiva.dgt_preventiva'].search([('cronograma', '=', self.id),('data_programada','=',data_programada)], offset=0, limit=None, order=None, count=False)
         return res
-    #usado no report da impressao
-    def get_number_weeks(self,ano, mes):
+   
+    ''' Usado no report_cronograma_preventiva_template da impressao do cronograma
+    
+    '''
+    def report_get_number_weeks(self,ano, mes):
         
         
         res = len(monthcalendar(ano,mes))

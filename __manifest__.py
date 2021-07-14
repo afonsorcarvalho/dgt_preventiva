@@ -31,6 +31,7 @@
         'views/dgt_preventiva_contratos.xml',
         'reports/report_assinatura_template.xml',
         'reports/reports_preventiva.xml',
+        'reports/report_preventiva_pecas_template.xml',
         'reports/report_preventiva_template.xml',
         'reports/report_cronograma_preventiva_template.xml',
         'reports/report_cliente_equipment_template.xml',

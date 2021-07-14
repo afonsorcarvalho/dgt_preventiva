@@ -27,16 +27,6 @@
     			</xpath>
 			</field>
 		</record>	
-		<!-- Inherit Form view -->
-		<record id="view_form_dgt_inherit" model="ir.ui.view">
-			<field name="name">dgt_os.os.inherit.form</field>
-			<field name="model">dgt_os.os</field>
-			<field name="inherit_id" ref="dgt_os.dgt_os_form_view"/>
-			<field name="arch" type="xml">
-				<xpath expr="//field[@name='maintenance_type']" position="after">		
-                     <field name="maintenance_grupo_instrucao"  widget="many2many_tags" attrs="{'readonly':[('state','=', 'done')], 'invisible':[('maintenance_type','!=','preventive')]}"/>	
-    			</xpath>
-			</field>
-		</record>	
+	
     </data>
 </odoo>
