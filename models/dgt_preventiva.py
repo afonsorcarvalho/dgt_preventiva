@@ -518,7 +518,7 @@ class CronogramaPreventiva(models.Model):
             ],
             offset=0,
             limit=None,
-            order='data_programada ASC',
+            order='data_programada DESC',
             count=False)
 
         meses_com_preventiva = []
