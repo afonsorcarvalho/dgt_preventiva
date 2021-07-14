@@ -528,8 +528,8 @@ class CronogramaPreventiva(models.Model):
             
             meses_com_preventiva = list(set(meses_com_preventiva) | set([rec_mes]))
 
-        _logger.debug(meses_com_preventiva)
-        return meses_com_preventiva.sort()
+        _logger.debug(sorted(meses_com_preventiva))
+        return sorted(meses_com_preventiva)
    
     ''' Usado no report_cronograma_preventiva_template da impressao do cronograma
     
