@@ -67,6 +67,9 @@ class DgtOsInherit(models.Model):
         result.default_fiscal_position()
         return result
     
+
+    
+    
     @api.onchange('date_scheduled')
     def onchange_scheduled_date(self):
         preventiva = self.env['dgt_preventiva.dgt_preventiva'].search([('os_id', '=', self.name)])
@@ -76,87 +79,7 @@ class DgtOsInherit(models.Model):
                 _(msg))
         self.date_execution = self.date_scheduled
         
-    #TODO Colocar o add_service também na dgt_os.os para fazer somente um override aqui
-    # - Verificar se já existe o serviço adicionado e apenas atualizar as horas e a descrição do serviço
-
-    def add_service(self):
-        _logger.debug("adicionando serviço atraves do contrato:")
-        _logger.debug(self.contrato)
-        
-        _logger.debug("procurando serviço já adicionados na OS")
-        line = self.env['dgt_os.os.servicos.line'].search([('os_id', '=',self.id )], offset=0, limit=None, order=None, count=False)
-        servicos_line = []
-        _logger.debug("Serviços achados para OS")
-        for serv_line in line: 
-            servicos_line.append(serv_line.product_id)
-            _logger.debug(serv_line.product_id.name)
-        
-        #TODO Pegar do tipo da OS que deverá também ser mudada de selection para classe contendo o serviço padrão
-        #Procurando o id do serviço padrão
-        
-        # não há nenhum serviço adicionado
-        if len(servicos_line) == 0:
-            _logger.debug("Serviços Padrão")
-            service_default = self.env['product.product'].search([('name','ilike','Manutenção Geral')], limit=1)
-            _logger.debug(service_default.name)
-            
-            #_logger.debug("Serviços Padrão Corretiva")
-            #service_corrective_default = self.env['product.product'].search([('name','ilike','Manutenção corretiva')], limit=1)
-            #_logger.debug(service_corrective_default)
-            
-            #_logger.debug("Serviços Padrão Preventiva")
-            #service_preventive_default = self.env['product.product'].search([('name','ilike','Manutenção Preventiva')], limit=1)
-            #_logger.debug(service_preventive_default)
-            #produto padrao para serviços em geral
-            
-            if not service_default.id:
-                raise UserError(_("Serviço padrão não configurado. Favor configurá-lo. Adicione o serviço 'Manutenção Geral'"))
-            product_id = service_default
-            
-                
-            if self.contrato.id:
-                _logger.debug("Existe contrato para esse equipamento:")
-                _logger.debug("Colocando serviço padrão para contrato:")
-                if self.contrato.service_product_id.id:
-                    #verificando se tem esse serviço ja foi adicionado
-                    if self.contrato.service_product_id in servicos_line:
-                        _logger.debug("Já existe serviço adicionado: %s", self.contrato.service_product_id.name)
-                    else:
-                        _logger.debug("Serviço adicionado: %s", self.contrato.service_product_id.name)
-                        product_id = self.contrato.service_product_id
-                
-            _logger.debug("Verificando tempo para adicionar no serviço")
-            if self.time_execution > 0:
-                _logger.debug("Colocado tempo de execução no serviço: %s",self.time_execution )
-                product_uom_qty = self.time_execution
-                
-            else:
-                _logger.debug("Colocado tempo estimado no serviço: %s", self.maintenance_duration)
-                product_uom_qty = self.maintenance_duration
-            _logger.debug("Create servicos line:")
-            
-        # res = self.env['dgt_os.os.servicos.line'].create({
-        #     'os_id' : self.id,
-        #     'name': self.description,
-        #     'product_id' : product_id.id,
-        #     'product_uom': product_id.uom_id.id,
-        #     'product_uom_qty' : product_uom_qty
-        # }) 
-        #TODO verificar se está pegando mesmo a descrição
-            if self.description:
-                name = self.description
-            else:
-                name = product_id.display_name
-            self.servicos = [(0,0,{
-                'os_id' : self.id,
-                'automatic': True,
-                'name': name,
-                'product_id' : product_id.id,
-                'product_uom': product_id.uom_id.id,
-                'product_uom_qty' : product_uom_qty
-            })]
-            _logger.debug( self.servicos)
-        return self.servicos
+    
     
     def default_analytic_account(self):
         #se tiver contrato
