@@ -7,7 +7,7 @@
 					<t t-foreach="line.parts_request" t-as="line_pecas">
 						
 							
-								Requisitado - <span t-field="line_pecas.name" /> - QTD <span t-field="line_pecas.product_uom_qty" /> <br/>
+								Requisitado - <span t-field="line_pecas.parts_request.name" /> - QTD <span t-field="line_pecas.product_uom_qty" /> <br/>
 							
 						
 													
