@@ -15,6 +15,9 @@ class PreventivaContratos(models.Model):
 
     _order = 'name ASC'
 
+    _inherit = ['mail.thread', 'mail.activity.mixin',
+                'portal.mixin', 'utm.mixin']
+
     name = fields.Char(
         string=u'Name',
         required=True,
