@@ -21,6 +21,9 @@ class PreventivaContratos(models.Model):
     _name = 'dgt_preventiva.contratos'
     _description = u'Contrato de preventiva'
 
+    _inherit = ['mail.thread', 'mail.activity.mixin',
+                'portal.mixin', 'utm.mixin']
+
     _order = 'name ASC'
 
     name = fields.Char(
