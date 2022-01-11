@@ -23,6 +23,8 @@
                                             <field name="qty_available" string="Qtd Disp."/> 
                                             <field name="product_uom_qty" string="Qtd"/> 
                                             <field name="product_uom" string="Unidade"/> 
+                                            <field name='relatorio_parts_id'/>
+                                            <field name='relatorio_request_id'/>
                                         
                                         </group>
                                         <group>
@@ -44,6 +46,8 @@
                           <!--   <field name="peca_autorizada" readonly="True" /> -->
                             <field name="product_uom_qty" string="Qtd Ped"/>
                             <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>
+                            <field name='relatorio_parts_id'/>
+                            <field name='relatorio_request_id'/>
                             
                         </tree>
                     

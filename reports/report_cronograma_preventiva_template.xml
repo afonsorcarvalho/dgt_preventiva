@@ -20,7 +20,7 @@
 
 
 						<t t-set="i" t-value="0"/>
-						<t t-set="ano" t-value="2021"/>
+						<t t-set="ano" t-value="2022"/>
 						<t t-set="meses" t-value="o.report_get_meses_que_tem_preventivas(ano)"/>
 						
 						
