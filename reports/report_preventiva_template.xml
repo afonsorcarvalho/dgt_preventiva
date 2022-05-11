@@ -303,6 +303,30 @@
 								<t t-call="dgt_preventiva.report_assinatura_template" />
 							</div>
 						</div>
+
+				
+						<t t-if="o.picture_ids">
+							<div class="col-12"  style="page-break-before: always;text-align:center ">
+								<h1>ANEXO FOTOS</h1>
+							
+								<t t-set="number_foto" t-value="1" />
+								
+								<t t-foreach="o.picture_ids" t-as="picture">
+									
+									<div  class="row-12"  style="border:1px solid;height:330mm;page-break-after: always; text-align:center ">
+										
+										<h1>Figura - <t t-esc="number_foto" /> - <span t-field="picture.name" /></h1>
+										
+										
+										<p>
+										<span t-field="picture.description" />
+										</p>
+										<img t-attf-src="data:image/png;base64,{{ picture.picture }}" style="max-height:280mm" />
+									</div>
+									<t t-set="number_foto" t-value="number_foto+1" />
+								</t>						
+							</div>
+						</t>
 					</div>
 				</t>
 			</t>

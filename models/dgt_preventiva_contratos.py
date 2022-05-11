@@ -15,7 +15,8 @@ _logger = logging.getLogger(__name__)
 # 1 faltando colocar o contato do contrato, para qual vai os emails de andamento do serviço de cada equipamento
 # 2 faltando criar a sequencia dos contratos para name
 # 3 faltando bloquear o usuário para não colocar um equipamento com contrato vigente
-# 4 faltando não deixar usuário colocar dois equipamentos igual
+# 4 faltando não deixar usuário colocar dois equipamentos iguais
+# 5 faltando corrigir botão de gerar cronograma
 
 class PreventivaContratos(models.Model):
     _name = 'dgt_preventiva.contratos'
