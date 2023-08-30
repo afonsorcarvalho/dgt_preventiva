@@ -281,17 +281,30 @@
 													<span t-if="line.aplicada">
 														Aplicada
 													</span>
+													<span t-if="line.not_aproved">
+														Não autorizada
+													</span>
 													<span t-else="">
 														Requisitada
 													</span>
 												</td>
 												<td>
-													<span t-field="line.name" />
+													<span t-if="line.not_aproved">
+
+														<del><span t-field="line.name" /> </del>
+													</span>
+													<span t-if="not line.not_aproved">
+
+														<span t-field="line.name" />
+													</span>
 												</td>
-												<td class="text-right">
-													<span t-field="line.product_uom_qty" />
-													<span t-field="line.product_uom" groups="product.group_uom" />
-												</td>
+												
+													
+													<td class="text-right">
+														<span t-field="line.product_uom_qty" />
+														<span t-field="line.product_uom" groups="product.group_uom" />
+													</td>
+												
 											</tr>
 										</t>
 									</tbody>

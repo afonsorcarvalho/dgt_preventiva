@@ -18,11 +18,14 @@
 				</t>
                 <t-if t-if="line.parts_application">
 					<t t-foreach="line.parts_application" t-as="line_pecas_applied">
-						
+						 
+						<t t-if="line_pecas_applied.not_aproved">							
+								Não autorizada - <span t-field="line_pecas_applied.parts_request.name" /> - QTD <span t-field="line_pecas_applied.parts_request.product_uom_qty" /><br/>
 							
+						</t>
+						<t t-if="not line_pecas_applied.not_aproved">
 								Aplicado - <span t-field="line_pecas_applied.parts_request.name" /> - QTD <span t-field="line_pecas_applied.parts_request.product_uom_qty" /><br/>
-							
-						
+						</t>
 													
 						
 						

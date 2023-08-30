@@ -1,4 +1,5 @@
 
+from email.policy import default
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 from odoo.addons import decimal_precision as dp
@@ -33,6 +34,11 @@ class PreventivaContratos(models.Model):
         default=lambda self: _('New'),
         copy=False
     )
+    TYPE_CONTRACT_SELECTION = [
+        ('preventiva', 'Apenas Preventiva'),
+        ('completo', 'Preventiva e corretiva'),
+  
+	]
     STATE_SELECTION = [
         ('draft', 'Criado'),
         ('vigente', 'Vigente'),
@@ -42,6 +48,11 @@ class PreventivaContratos(models.Model):
     state = fields.Selection(
         string=u'Status',
         selection=STATE_SELECTION
+    )
+    type_contract = fields.Selection(
+        string=u'Tipo de contrato',
+        selection=TYPE_CONTRACT_SELECTION,
+        default='completo',
     )
     
 

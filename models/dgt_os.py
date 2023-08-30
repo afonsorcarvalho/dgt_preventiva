@@ -125,6 +125,11 @@ class DgtOsInherit(models.Model):
             self.default_analytic_account()
             self.default_fiscal_position()
 
+    
+
+#TODO - fazer que a preventiva bimestral, adiciona a mensal, a trimestral adicione a mensal, a semestral a mensal, trimestral,
+#  bimestral e a anual adiciona todos os grupos
+
     def create_checklist(self):
         """Cria a lista de verificacao caso a OS seja preventiva"""
         if self.maintenance_type == 'preventive':

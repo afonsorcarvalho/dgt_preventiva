@@ -53,12 +53,7 @@ class CategoryInstructionPreventiva(models.Model):
     
 
 class CategoryInstrucionPreventivaGrupo(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Nome do grupo de instruções de preventiva.
-
-    """
+  
 
     _name = 'dgt_os.instruction.grupo'
     _description = u'Grupo de instruções de preventivas'
@@ -94,13 +89,7 @@ class CategoryInstrucionPreventivaGrupo(models.Model):
 
 
 class CategoryInstrucionPreventivaGrandeza(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
-    """
-
+ 
     _name = 'dgt_os.equipment.category.instruction.grandeza'
     _description = u'Grandezas da instruççoes de preventiva'
 
@@ -119,17 +108,12 @@ class CategoryInstrucionPreventivaGrandeza(models.Model):
     )
 
 class CategoryInstrucionSecao(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
-    """
+   
 
     _name = 'dgt_os.equipment.category.instruction.secao'
-    _description = u'Seção instruççoes de preventiva'
+    _description = u'Seção instruções de preventiva'
 
-    _rec_name = 'name'
+  
     _order = 'name ASC'
 
     name = fields.Char(
