@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--
+    "Checklist de Campo": formulário em branco pro técnico marcar à mão.
+    Itens vêm de dgt_os.os._checklist_campo_items(); sem itens cadastrados,
+    sai com linhas pautadas vazias pro técnico escrever as instruções.
+-->
+<template id="dgt_preventiva.report_checklist_campo_template">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-set="title">ORDEM DE SERVIÇO - CHECKLIST DE CAMPO</t>
+            <t t-set="form_version">V1.2</t>
+            <t t-set="items" t-value="o._checklist_campo_items()"/>
+            <t t-call="dgt_os.report_campo_layout">
+                <style>
+                    .osc-ck thead { display: table-header-group; }
+                    .osc-ck tr { page-break-inside: avoid; }
+                    .osc-ck th { font-size: 7.5pt; color: #444; text-transform: uppercase; text-align: center;
+                                 border-bottom: 0.3mm solid #222; padding: 1mm 1mm; }
+                    .osc-ck td { border-bottom: 0.25mm solid #888; border-left: 0.25mm solid #bbb;
+                                 height: 7mm; padding: 0.6mm 1.5mm; font-size: 9pt; }
+                    .osc-ck td:first-child { border-left: none; }
+                    .osc-ck .n { text-align: center; color: #333; font-size: 8.5pt; }
+                    .osc-ck .b { text-align: center; }
+                    .osc-ck .b .osc-box { margin-right: 0; }
+                    .osc-ck .med { text-align: right; color: #222; font-size: 8.5pt; white-space: nowrap; }
+                    .osc-ck .nomed { background-color: #e6e6e6; }
+                    .osc-ck .sec td { background-color: #f2f2f2; font-weight: bold; font-size: 8.5pt;
+                                      text-transform: uppercase; letter-spacing: 0.4pt; height: 6mm; }
+                </style>
+
+                <t t-call="dgt_os.report_campo_cliente_equipamento"/>
+
+                <div class="osc-sec">Execução</div>
+                <table class="osc-grid" style="margin-bottom: 1mm;">
+                    <tr>
+                        <td style="width: 50%;">
+                            <span class="osc-lbl">Tipo de manutenção</span>
+                            <span class="osc-val" t-field="o.maintenance_type"/>
+                        </td>
+                        <td>
+                            <span class="osc-lbl">Mês referência</span>
+                            <span class="osc-val" t-esc="o.date_scheduled and o.date_scheduled.strftime('%m/%Y') or ''"/>
+                        </td>
+                    </tr>
+                </table>
+                <t t-call="dgt_os.report_campo_execucao"/>
+
+                <div class="osc-sec">Checklist</div>
+                <table class="osc-ck">
+                    <thead>
+                        <tr>
+                            <th style="width: 8mm;">Nº</th>
+                            <th style="text-align: left;">Instrução</th>
+                            <th style="width: 10mm;">OK</th>
+                            <th style="width: 14mm;">Não OK</th>
+                            <th style="width: 10mm;">N/A</th>
+                            <th style="width: 30mm;">Medição</th>
+                            <th style="width: 40mm; text-align: left;">Observação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-if="items">
+                            <t t-set="last_section" t-value="False"/>
+                            <t t-foreach="items" t-as="item">
+                                <tr t-if="item['section'] and item['section'] != last_section" class="sec">
+                                    <td colspan="7" t-esc="item['section']"/>
+                                </tr>
+                                <t t-set="last_section" t-value="item['section']"/>
+                                <tr>
+                                    <td class="n" t-esc="item_index + 1"/>
+                                    <td><t t-esc="item['name'] or ''"/></td>
+                                    <td class="b"><span class="osc-box"/></td>
+                                    <td class="b"><span class="osc-box"/></td>
+                                    <td class="b"><span class="osc-box"/></td>
+                                    <td t-if="item['tem_medicao']" class="med">
+                                        <t t-esc="item['unidade']"/>
+                                    </td>
+                                    <td t-if="not item['tem_medicao']" class="nomed"/>
+                                    <td/>
+                                </tr>
+                            </t>
+                        </t>
+                        <t t-if="not items">
+                            <tr t-foreach="range(11)" t-as="i">
+                                <td class="n" t-esc="i + 1"/>
+                                <td/>
+                                <td class="b"><span class="osc-box"/></td>
+                                <td class="b"><span class="osc-box"/></td>
+                                <td class="b"><span class="osc-box"/></td>
+                                <td/>
+                                <td/>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <div class="osc-sec">Observações gerais</div>
+                <table class="osc-ruled">
+                    <tr t-foreach="range(3)" t-as="i"><td>&#160;</td></tr>
+                </table>
+
+                <t t-call="dgt_os.report_campo_assinaturas"/>
+            </t>
+        </t>
+    </t>
+</template>
+</odoo>

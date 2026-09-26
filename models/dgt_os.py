@@ -130,6 +130,40 @@ class DgtOsInherit(models.Model):
 #TODO - fazer que a preventiva bimestral, adiciona a mensal, a trimestral adicione a mensal, a semestral a mensal, trimestral,
 #  bimestral e a anual adiciona todos os grupos
 
+    def _checklist_campo_items(self):
+        """Itens do checklist de campo impresso, sem gravar nada.
+
+        Usa o checklist já gerado na OS; se ainda não houver, as instruções
+        da categoria do equipamento (filtradas pelos grupos da OS, se houver).
+        """
+        self.ensure_one()
+        # create_checklist grava str(name): instrução sem nome vira 'False'
+        def has_text(name):
+            return bool(name) and name.strip() not in ('', 'False')
+
+        if self.check_list:
+            return [{
+                'section': False,
+                'name': line.instruction,
+                'tem_medicao': line.tem_medicao,
+                'unidade': line.unidade or '',
+            } for line in self.check_list.sorted(lambda l: (l.sequence, l.id))
+                if has_text(line.instruction)]
+
+        category = self.equipment_id.category_id
+        if not category:
+            return []
+        domain = [('category_id', '=', category.id)]
+        if self.maintenance_grupo_instrucao:
+            domain.append(('grupo_id', 'in', self.maintenance_grupo_instrucao.ids))
+        instructions = self.env['dgt_os.equipment.category.instruction'].search(domain)
+        return [{
+            'section': instruction.section.name or False,
+            'name': instruction.name,
+            'tem_medicao': instruction.tem_medicao,
+            'unidade': instruction.grandeza.unidade or '',
+        } for instruction in instructions if has_text(instruction.name)]
+
     def create_checklist(self):
         """Cria a lista de verificacao caso a OS seja preventiva"""
         if self.maintenance_type == 'preventive':

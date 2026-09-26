@@ -32,6 +32,16 @@
             file="dgt_preventiva.report_checklist"
             print_report_name = "('Checklist ' + object.name)"
         />
+        <report
+            id="report_checklist_campo"
+            model="dgt_os.os"
+            string="Checklist de Campo"
+            report_type="qweb-pdf"
+            paperformat="dgt_os.paperformat_os_campo"
+            name="dgt_preventiva.report_checklist_campo_template"
+            file="dgt_preventiva.report_checklist_campo_template"
+            print_report_name="('Checklist Campo - ' + object.name)"
+        />
    <record id="report_cronograma_preventiva" model="ir.actions.report">
             
             <field name="name">Cronograma</field> 

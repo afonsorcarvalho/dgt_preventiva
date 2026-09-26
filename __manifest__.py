@@ -36,6 +36,7 @@
         'reports/report_cronograma_preventiva_template.xml',
         'reports/report_cliente_equipment_template.xml',
         'reports/report_checklist_template.xml',
+        'reports/report_checklist_campo_template.xml',
 
         'data/ir_sequence_data.xml',
         'data/mail_aviso_preventiva_template.xml'
